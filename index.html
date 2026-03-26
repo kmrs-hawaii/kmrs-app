@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="KMRS">
+<meta name="theme-color" content="#007AFF">
+<meta name="mobile-web-app-capable" content="yes">
+<link id="apple-touch-icon" rel="apple-touch-icon" sizes="180x180">
+<link id="pwa-manifest" rel="manifest">
+<title>KMRS · Property Management</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  -blue:#007AFF;--green:'#34C759;--orange:#FF9500;--red:#FF3B30;
+  --purple:#AF52DE;--teal:#32ADE6;--yellow:#FFCC00;
+  --bg:#F2F2F7;--card:#FFFFFF;--text:#1C1C1E;--text2:#3C3C43;
+  --text3:#8E8E93;--sep:#C6C6C8;
+  --safe-b:env(safe-area-inset-bottom,0px);
+  --safe-t:env(safe-area-inset-top,0px);
+}
+html,body{height:100%;overflow:hidden;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;background:var(--bg);color:var(--text);-webkit-text-size-adjust:100%;-webkit-font-smoothing:antialiased;}
+button{font-family:inherit;border:none;background:none;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+input,select,textarea{font-family:inherit;font-size:16px;}
+a{color:var(--blue);text-decoration:none;}
+
+/* ── LAYOUT ── */
+#app{display:flex;flex-direction:column;height:100vh;height:100dvh;}
+#page{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;scroll-behavior:smooth;}
+#page.locked{overflow:hidden;}
