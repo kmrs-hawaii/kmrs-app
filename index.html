@@ -14,7 +14,7 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
-  -blue:#007AFF;--green:'#34C759;--orange:#FF9500;--red:#FF3B30;
+  --blue:#007AFF;--green:#34C759;--orange:#FF9500;--red:#FF3B30;
   --purple:#AF52DE;--teal:#32ADE6;--yellow:#FFCC00;
   --bg:#F2F2F7;--card:#FFFFFF;--text:#1C1C1E;--text2:#3C3C43;
   --text3:#8E8E93;--sep:#C6C6C8;
@@ -31,3 +31,1820 @@ a{color:var(--blue);text-decoration:none;}
 #app{display:flex;flex-direction:column;height:100vh;height:100dvh;}
 #page{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;scroll-behavior:smooth;}
 #page.locked{overflow:hidden;}
+#tabbar{
+  display:flex;background:rgba(249,249,249,0.94);
+  border-top:0.5px solid var(--sep);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  padding-bottom:var(--safe-b);flex-shrink:0;
+  overflow-x:auto;overflow-y:hidden;
+  -webkit-overflow-scrolling:touch;scrollbar-width:none;
+}
+#tabbar::-webkit-scrollbar{display:none;}
+.tab-btn{
+  flex:0 0 auto;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:6px 4px;gap:3px;
+  color:var(--text3);font-size:10px;font-weight:500;min-height:49px;min-width:62px;
+  transition:color 0.1s;
+}
+.tab-btn.active{color:var(--blue);}
+.tab-btn svg{width:24px;height:24px;}
+
+/* ── PAGE HEADER ── */
+.pg-header{
+  background:rgba(242,242,247,0.94);padding:52px 20px 12px;
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  position:sticky;top:0;z-index:10;border-bottom:0.5px solid var(--sep);
+}
+.pg-header h1{font-size:28px;font-weight:700;letter-spacing:-0.4px;}
+.pg-header p{font-size:14px;color:var(--text3);margin-top:2px;}
+.pg-header-row{display:flex;align-items:flex-end;justify-content:space-between;}
+
+/* ── CARDS ── */
+.card{background:var(--card);border-radius:12px;margin:0 16px 12px;overflow:hidden;}
+.card-section{padding:14px 16px;}
+.card-row{display:flex;align-items:center;padding:13px 16px;border-bottom:0.5px solid var(--sep);}
+.card-row:last-child{border-bottom:none;}
+.cri{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-right:12px;flex-shrink:0;}
+.crt{flex:1;min-width:0;}
+.crt h3{font-size:16px;font-weight:400;}
+.crt p{font-size:13px;color:var(--text3);margin-top:1px;}
+.crr{margin-left:8px;color:var(--text3);display:flex;align-items:center;gap:6px;font-size:14px;flex-shrink:0;}
+.chev{color:var(--sep);}
+
+/* ── SECTION LABELS ── */
+.sec-label{font-size:13px;font-weight:400;color:var(--text3);text-transform:uppercase;letter-spacing:0.4px;padding:18px 20px 8px;}
+
+/* ── BADGES ── */
+.badge{display:inline-flex;align-items:center;padding:3px 8px;border-radius:10px;font-size:12px;font-weight:600;white-space:nowrap;}
+.b-green{background:#D4F5DF;color:#1A7A3A;}
+.b-orange{background:#FFF0D6;color:#B85C00;}
+.b-red{background:#FFE2E0;color:#C0392B;}
+.b-blue{background:#E0EDFF;color:#0055CC;}
+.b-gray{background:#EBEBF0;color:#636366;}
+.b-purple{background:#F0E6FF;color:#7B2D8B;}
+.b-teal{background:#E0F7FF;color:#006B8F;}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:13px 20px;border-radius:12px;font-size:16px;font-weight:600;gap:8px;transition:opacity 0.1s;}
+.btn:active{opacity:0.75;}
+.btn-primary{background:var(--blue);color:white;}
+.btn-green{background:var(--green);color:white;}
+.btn-red{background:var(--red);color:white;}
+.btn-secondary{background:#E5E5EA;color:var(--text);}
+.btn-block{width:100%;}
+
+/* ── FAB ── */
+.fab{position:fixed;bottom:calc(49px + var(--safe-b) + 20px);right:20px;width:56px;height:56px;border-radius:28px;background:var(--blue);color:white;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,122,255,0.45);z-index:50;}
+
+/* ── SHEET MODAL ── */
+.sheet-ov{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,0.35);display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity 0.25s;}
+.sheet-ov.open{opacity:1;pointer-events:all;}
+.sheet{background:var(--bg);border-radius:20px 20px 0 0;width:100%;max-height:93vh;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:calc(24px + var(--safe-b));transform:translateY(100%);transition:transform 0.3s cubic-bezier(0.32,0.72,0,1);}
+.sheet-ov.open .sheet{transform:translateY(0);}
+.sh-handle{width:36px;height:4px;background:#C7C7CC;border-radius:2px;margin:12px auto 6px;}
+.sh-head{display:flex;align-items:center;justify-content:space-between;padding:4px 20px 16px;}
+.sh-title{font-size:20px;font-weight:700;}
+.sh-close{width:32px;height:32px;border-radius:16px;background:#E5E5EA;color:var(--text3);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;}
+
+/* ── FORM FIELDS ── */
+.fg{margin:0 16px 12px;}
+.fg label{display:block;font-size:13px;color:var(--text3);text-transform:uppercase;letter-spacing:0.3px;margin-bottom:6px;}
+.fi{width:100%;padding:12px 14px;background:var(--card);border:none;border-radius:10px;color:var(--text);outline:none;-webkit-appearance:none;appearance:none;}
+.fi:focus{outline:2px solid var(--blue);}
+.fta{resize:none;min-height:80px;}
+.frow{display:flex;gap:10px;margin:0 16px 12px;}
+.frow .fg{margin:0;flex:1;}
+.fsel{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238E8E93' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;}
+
+/* ── TOGGLE ── */
+.tog-row{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;background:var(--card);border-radius:10px;margin:0 16px 12px;}
+.tog-row span{font-size:16px;}
+.toggle{position:relative;width:51px;height:31px;flex-shrink:0;}
+.toggle input{opacity:0;width:0;height:0;position:absolute;}
+.tog-sl{position:absolute;inset:0;background:#C7C7CC;border-radius:31px;transition:background 0.2s;cursor:pointer;}
+.tog-sl::before{content:'';position:absolute;width:27px;height:27px;left:2px;top:2px;border-radius:50%;background:white;box-shadow:0 2px 5px rgba(0,0,0,0.3);transition:transform 0.2s;}
+.toggle input:checked+.tog-sl{background:var(--green);}
+.toggle input:checked+.tog-sl::before{transform:translateX(20px);}
+
+/* ── CHECK ITEMS ── */
+.ck-item{display:flex;align-items:flex-start;background:var(--card);padding:12px 14px;border-radius:10px;margin-bottom:6px;gap:10px;}
+.ck-info{flex:1;}
+.ck-info .ck-label{font-size:15px;font-weight:400;line-height:1.3;}
+.ck-info input{width:100%;margin-top:7px;padding:7px 10px;background:#F2F2F7;border:none;border-radius:8px;font-size:13px;color:var(--text);outline:none;}
+.ck-btns{display:flex;gap:5px;padding-top:3px;}
+.ck-btn{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;background:#F2F2F7;transition:background 0.15s;}
+.ck-btn.sel-ok{background:#D4F5DF;}
+.ck-btn.sel-issue{background:#FFF0D6;}
+.ck-btn.sel-flag{background:#FFE2E0;}
+
+/* ── PROGRESS ── */
+.prog-wrap{padding:0 16px;}
+.prog-steps{display:flex;justify-content:space-between;margin-bottom:6px;}
+.prog-steps span{font-size:10px;color:var(--text3);}
+.prog-steps span.cur{color:var(--blue);font-weight:600;}
+.prog-bar{height:4px;background:#E5E5EA;border-radius:2px;}
+.prog-fill{height:100%;background:var(--blue);border-radius:2px;transition:width 0.3s;}
+.prog-label{display:flex;justify-content:space-between;font-size:12px;color:var(--text3);margin-top:4px;}
+
+/* ── STATS ── */
+.stat-row{display:flex;gap:10px;padding:0 16px;margin-bottom:14px;}
+.stat-card{flex:1;background:var(--card);border-radius:14px;padding:14px 12px;text-align:center;}
+.stat-num{font-size:30px;font-weight:700;letter-spacing:-0.5px;}
+.stat-lbl{font-size:11px;color:var(--text3);margin-top:2px;line-height:1.3;}
+
+/* ── EMPTY STATE ── */
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 32px;text-align:center;gap:10px;}
+.empty-ico{font-size:52px;}
+.empty h3{font-size:20px;font-weight:600;}
+.empty p{font-size:15px;color:var(--text3);line-height:1.5;}
+
+/* ── VENDOR ENTRY ── */
+.ve-card{background:var(--card);border-radius:10px;padding:12px;margin:0 16px 8px;display:flex;flex-direction:column;gap:8px;}
+.ve-card .fi{background:#F2F2F7;}
+.ve-card .fsel{background-color:#F2F2F7;}
+.ve-del{align-self:flex-end;font-size:13px;color:var(--red);font-weight:600;padding:4px 8px;}
+
+/* ── FLAG ENTRY ── */
+.fl-card{background:var(--card);border-radius:10px;padding:12px;margin:0 16px 8px;display:flex;flex-direction:column;gap:8px;}
+.fl-card .fi{background:#F2F2F7;}
+
+/* ── PRIORITY PILL ── */
+.pri-row{display:flex;gap:8px;}
+.pri-btn{flex:1;padding:8px;border-radius:10px;background:#F2F2F7;font-size:13px;font-weight:600;transition:all 0.15s;}
+.pri-btn.sel-low{background:#FFFDE0;color:#8B7000;}
+.pri-btn.sel-med{background:#FFF0D6;color:#B85C00;}
+.pri-btn.sel-high{background:#FFE2E0;color:#C0392B;}
+
+/* ── GREETING ── */
+.greeting{padding:calc(var(--safe-t) + 52px) 20px 14px;}
+.greeting h1{font-size:30px;font-weight:700;letter-spacing:-0.5px;}
+.greeting p{font-size:16px;color:var(--text3);margin-top:3px;}
+
+/* ── PHOTO GRID ── */
+.photo-grid{display:flex;flex-wrap:wrap;gap:8px;padding:0 16px 8px;}
+.photo-thumb{width:80px;height:80px;border-radius:10px;object-fit:cover;cursor:pointer;background:#E5E5EA;}
+.photo-add{width:80px;height:80px;border-radius:10px;background:#F2F2F7;border:1.5px dashed var(--sep);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;font-size:22px;color:var(--text3);gap:2px;}
+.photo-add span{font-size:10px;font-weight:600;}
+
+/* ── CALENDAR ── */
+.cal-nav{display:flex;align-items:center;justify-content:space-between;padding:8px 20px 12px;}
+.cal-nav-btn{width:36px;height:36px;border-radius:18px;background:#E5E5EA;display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--text);font-weight:300;}
+.cal-month-lbl{font-size:18px;font-weight:600;}
+.cal-dow-row{display:grid;grid-template-columns:repeat(7,1fr);padding:0 16px;}
+.cal-dow{font-size:11px;font-weight:600;color:var(--text3);text-align:center;padding:4px 0 8px;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;padding:0 16px;}
+.cal-cell{display:flex;flex-direction:column;align-items:center;padding:4px 2px;border-radius:8px;cursor:pointer;min-height:48px;}
+.cal-cell:hover{background:#F2F2F7;}
+.cal-cell.today .cal-num{background:var(--blue);color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;}
+.cal-cell.other-month{opacity:0.3;pointer-events:none;}
+.cal-num{font-size:14px;line-height:26px;min-width:26px;text-align:center;}
+.cal-dots{display:flex;gap:2px;justify-content:center;flex-wrap:wrap;margin-top:2px;}
+.cal-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
+
+/* ── PROJECTS ── */
+.proj-status-bar{height:4px;border-radius:2px;margin:10px 0 0;}
+.task-item{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:0.5px solid var(--sep);}
+.task-item:last-child{border-bottom:none;}
+.task-check{width:22px;height:22px;border-radius:11px;border:2px solid var(--sep);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;transition:all 0.15s;}
+.task-check.done{background:var(--green);border-color:var(--green);color:white;}
+.task-text{flex:1;font-size:15px;}
+.task-text.done{text-decoration:line-through;color:var(--text3);}
+
+/* ── INVOICE TOTALS ── */
+.inv-stat-row{display:flex;gap:10px;padding:0 16px;margin-bottom:14px;}
+.inv-stat{flex:1;background:var(--card);border-radius:12px;padding:12px 10px;text-align:center;}
+.inv-stat-amt{font-size:20px;font-weight:700;letter-spacing:-0.5px;}
+.inv-stat-lbl{font-size:11px;color:var(--text3);margin-top:2px;}
+
+/* ── UTILITY ── */
+.pb100{padding-bottom:100px;}
+.mt8{margin-top:8px;}
+.mt12{margin-top:12px;}
+.mt16{margin-top:16px;}
+.gap8{display:flex;gap:8px;}
+.hidden{display:none!important;}
+.filter-pills{display:flex;gap:8px;padding:8px 16px 4px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.filter-pills::-webkit-scrollbar{display:none;}
+.pill{flex-shrink:0;padding:7px 16px;border-radius:20px;font-size:13px;font-weight:500;background:#E5E5EA;color:var(--text);transition:all 0.15s;white-space:nowrap;}
+.pill.active{background:var(--blue);color:white;font-weight:600;}
+
+@keyframes slideUp{from{opacity:0;transform:translateX(-50%) translateY(12px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
+
+/* ── SIDEBAR (desktop) ── */
+@media (min-width:768px){
+  #app{flex-direction:row;height:100vh;}
+  #tabbar{
+    flex-direction:column;width:230px;min-width:230px;
+    border-top:none;border-right:1px solid var(--sep);
+    padding:0;order:-1;height:100vh;overflow-y:auto;overflow-x:hidden;
+    justify-content:flex-start;align-items:stretch;
+    background:rgba(249,249,249,0.98);
+  }
+  .sidebar-logo{display:flex;align-items:center;gap:10px;padding:22px 18px 16px;border-bottom:0.5px solid var(--sep);font-size:18px;font-weight:700;letter-spacing:-0.3px;flex-shrink:0;}
+  .sidebar-logo img{width:32px;height:32px;border-radius:8px;object-fit:cover;}
+  .sidebar-logo .logo-txt{font-size:18px;font-weight:800;letter-spacing:-0.5px;}
+  .tab-btn{flex-direction:row;justify-content:flex-start;padding:11px 14px;gap:12px;font-size:15px;font-weight:400;min-height:auto;border-radius:10px;margin:2px 8px;width:calc(100% - 16px);min-width:auto;}
+  .tab-btn svg{width:20px;height:20px;flex-shrink:0;}
+  .tab-btn.active{background:rgba(0,122,255,0.11);font-weight:600;}
+  .tab-btn span{text-align:left;}
+  .sidebar-footer{margin-top:auto;border-top:0.5px solid var(--sep);padding:12px 8px;display:flex;flex-direction:column;gap:4px;flex-shrink:0;}
+  .sidebar-footer-btn{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;font-size:13px;font-weight:500;color:var(--text3);cursor:pointer;}
+  .sidebar-footer-btn:hover{background:#EBEBF0;color:var(--text);}
+  #page{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;height:100vh;padding-bottom:40px;}
+  #page.pb100{padding-bottom:40px;}
+  .pg-header{padding:28px 28px 14px;}
+  .pg-header h1{font-size:30px;}
+  .greeting{padding:28px 28px 16px;}
+  .greeting h1{font-size:32px;}
+  .card{margin:0 20px 14px;}
+  .sec-label{padding:20px 24px 8px;}
+  .stat-row,.inv-stat-row{padding:0 20px;gap:14px;}
+  .filter-pills{padding:8px 20px 4px;}
+  .fab{bottom:28px;right:28px;}
+  .sheet-ov{align-items:center;justify-content:center;padding:20px;}
+  .sheet{border-radius:16px;max-width:560px;width:100%;max-height:88vh;transform:scale(0.94);transition:transform 0.25s cubic-bezier(0.32,0.72,0,1),opacity 0.2s;}
+  .sheet-ov.open .sheet{transform:scale(1);}
+  .sh-handle{display:none;}
+  .frow{gap:16px;}
+  .cal-dow-row,.cal-grid{padding:0 24px;}
+  .photo-grid{padding:0 20px 8px;}
+}
+@media (min-width:1100px){
+  #tabbar{width:260px;min-width:260px;}
+  .sheet{max-width:620px;}
+  .pg-header{padding:32px 36px 16px;}
+  .card{margin:0 28px 14px;}
+  .sec-label{padding:20px 32px 8px;}
+  .stat-row,.inv-stat-row{padding:0 28px;}
+  .greeting{padding:32px 36px 18px;}
+  .cal-dow-row,.cal-grid{padding:0 28px;}
+  .filter-pills{padding:8px 28px 4px;}
+  .photo-grid{padding:0 28px 8px;}
+}
+
+/* ── PRINT / REPORT ── */
+@media print{
+  #tabbar,.fab,.sheet-ov{display:none!important;}
+  #page{overflow:visible!important;height:auto!important;}
+  body{background:white;}
+  .card{break-inside:avoid;box-shadow:none;border:1px solid #ddd;}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="page" class="pb100"></div>
+  <nav id="tabbar"></nav>
+</div>
+<div class="sheet-ov" id="sheetOv" onclick="if(event.target===this)closeSheet()">
+  <div class="sheet" id="sheetEl">
+    <div class="sh-handle"></div>
+    <div id="sheetContent"></div>
+  </div>
+</div>
+<script>
+/* ═══════════════════════════════════════════════
+   DATA STORE — migrates from luxpm_v2 → kmrs_v1
+═══════════════════════════════════════════════ */
+const SK='kmrs_v1', SK_OLD='luxpm_v2';
+let db=(()=>{
+  try{
+    let r=localStorage.getItem(SK)||localStorage.getItem(SK_OLD);
+    if(r){
+      const p=JSON.parse(r);
+      return Object.assign({properties:[],vendors:[],checks:[],maintenance:[],sopRecords:[],invoices:[],projects:[]},p);
+    }
+  }catch(e){}
+  return {properties:[],vendors:[],checks:[],maintenance:[],sopRecords:[],invoices:[],projects:[]};
+})();
+
+function save(){
+  try{localStorage.setItem(SK,JSON.stringify(db));localStorage.removeItem(SK_OLD);}catch(e){}
+}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).substr(2,8);}
+
+/* ═══════════════════════════════════════════════
+   INDEXEDDB — PHOTO STORE
+═══════════════════════════════════════════════ */
+let _photoDB=null;
+function openPhotoDB(){
+  return new Promise((res,rej)=>{
+    if(_photoDB){res(_photoDB);return;}
+    const req=indexedDB.open('kmrs_photos_v1',1);
+    req.onupgradeneeded=e=>{const d=e.target.result;if(!d.objectStoreNames.contains('photos'))d.createObjectStore('photos',{keyPath:'id'});};
+    req.onsuccess=e=>{_photoDB=e.target.result;res(_photoDB);};
+    req.onerror=e=>rej(e);
+  });
+}
+async function storePhoto(id,dataUrl){
+  const d=await openPhotoDB();
+  return new Promise((res,rej)=>{const tx=d.transaction('photos','readwrite');tx.objectStore('photos').put({id,data:dataUrl,ts:Date.now()});tx.oncomplete=()=>res();tx.onerror=e=>rej(e);});
+}
+async function loadPhoto(id){
+  const d=await openPhotoDB();
+  return new Promise((res,rej)=>{const tx=d.transaction('photos','readonly');const req=tx.objectStore('photos').get(id);req.onsuccess=()=>res(req.result?req.result.data:null);req.onerror=e=>rej(e);});
+}
+async function deletePhoto(id){
+  const d=await openPhotoDB();
+  return new Promise((res,rej)=>{const tx=d.transaction('photos','readwrite');tx.objectStore('photos').delete(id);tx.oncomplete=()=>res();tx.onerror=e=>rej(e);});
+}
+function compressImage(file,maxPx,q){
+  return new Promise(res=>{
+    const reader=new FileReader();
+    reader.onload=e=>{
+      const img=new Image();
+      img.onload=()=>{
+        let w=img.width,h=img.height;
+        if(w>maxPx||h>maxPx){if(w>h){h=Math.round(h*maxPx/w);w=maxPx;}else{w=Math.round(w*maxPx/h);h=maxPx;}}
+        const c=document.createElement('canvas');c.width=w;c.height=h;
+        c.getContext('2d').drawImage(img,0,0,w,h);
+        res(c.toDataURL('image/jpeg',q));
+      };
+      img.src=e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+/* ═══════════════════════════════════════════════
+   DATE UTILS
+═══════════════════════════════════════════════ */
+function today(){return new Date().toISOString().split('T')[0];}
+function fmtDate(iso){if(!iso)return'—';const d=new Date(iso+'T12:00:00');return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}
+function fmtShort(iso){if(!iso)return'—';const d=new Date(iso+'T12:00:00');return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});}
+function daysBetween(d1,d2){return Math.round((new Date(d2+'T12:00:00')-new Date(d1+'T12:00:00'))/86400000);}
+function daysFrom(iso){return iso?daysBetween(today(),iso):null;}
+function addMonths(iso,n){if(!iso)return null;const d=new Date(iso+'T12:00:00');d.setMonth(d.getMonth()+n);return d.toISOString().split('T')[0];}
+function addDays(iso,n){const d=new Date(iso+'T12:00:00');d.setDate(d.getDate()+n);return d.toISOString().split('T')[0];}
+function freqMonths(f){return{monthly:1,quarterly:3,biannual:6,annual:12}[f]||3;}
+function freqLabel(f){return{monthly:'Monthly',quarterly:'Quarterly',biannual:'Every 6 months',annual:'Annual'}[f]||f;}
+
+/* ═══════════════════════════════════════════════
+   LOOKUPS & STATUS
+═══════════════════════════════════════════════ */
+function propName(id){const p=db.properties.find(p=>p.id===id);return p?p.name:'Unknown';}
+function vendorName(id){const v=db.vendors.find(v=>v.id===id);return v?v.name:'—';}
+function lastCheck(pid){return db.checks.filter(c=>c.propertyId===pid).sort((a,b)=>b.date.localeCompare(a.date))[0]||null;}
+function checkStatus(pid){const lc=lastCheck(pid);if(!lc)return'never';const d=daysBetween(lc.date,today());if(d<=7)return'ok';if(d<=14)return'due';return'overdue';}
+function maintStatus(m){if(!m.nextDue)return'unscheduled';const d=daysFrom(m.nextDue);if(d<0)return'overdue';if(d<=30)return'due_soon';return'ok';}
+function calcInvoiceStatus(inv){if(inv.status==='paid')return'paid';if(inv.dueDate&&inv.dueDate<today())return'overdue';return'unpaid';}
+function projStatusColor(s){return{planning:'#8E8E93',active:'var(--blue)',on_hold:'var(--orange)',completed:'var(--green)'}[s]||'#8E8E93';}
+function projStatusLabel(s){return{planning:'Planning',active:'Active',on_hold:'On Hold',completed:'Completed'}[s]||s;}
+
+const CATS={
+  hvac:{label:'HVAC / AC',emoji:'❄️',color:'#5AC8FA'},
+  pool:{label:'Pool & Spa',emoji:'🏊',color:'#007AFF'},
+  pest:{label:'Pest Control',emoji:'🪲',color:'#FF9500'},
+  landscape:{label:'Landscaping',emoji:'🌿',color:'#34C759'},
+  plumbing:{label:'Plumbing',emoji:'🔧',color:'#32ADE6'},
+  electrical:{label:'Electrical',emoji:'⚡',color:'#FFCC00'},
+  general:{label:'General',emoji:'🏠',color:'#8E8E93'},
+  vehicles:{label:'Cars & Golf Carts',emoji:'🚗',color:'#FF6B35'},
+  custom:{label:'Custom',emoji:'📋',color:'#AF52DE'},
+};
+
+const SOP_ARRIVAL=[
+  {section:'clean',label:'🧹 Deep Clean & Linens',items:[
+    {id:'a_clean_house',label:'Full house cleaned — all rooms'},
+    {id:'a_clean_kitchen',label:'Kitchen deep cleaned & sanitized'},
+    {id:'a_clean_baths',label:'All bathrooms cleaned & sanitized'},
+    {id:'a_linens',label:'Fresh linens on all beds'},
+    {id:'a_towels',label:'Fresh towels staged in all bathrooms'},
+    {id:'a_floors',label:'Floors vacuumed & mopped throughout'},
+  ]},
+  {section:'systems',label:'⚙️ Systems Check',items:[
+    {id:'a_ac',label:'AC set to owner preferred temperature'},
+    {id:'a_water_heater',label:'Water heater on & functioning'},
+    {id:'a_appliances',label:'Appliances tested (fridge, oven, dishwasher)'},
+    {id:'a_wifi',label:'TV & WiFi verified working'},
+    {id:'a_security',label:'Security system active & tested'},
+    {id:'a_plumbing',label:'No leaks — water pressure OK'},
+  ]},
+  {section:'outdoor',label:'🌺 Outdoor Prep',items:[
+    {id:'a_pool',label:'Pool cleaned & chemistry balanced'},
+    {id:'a_pool_equip',label:'Pool/spa equipment functioning'},
+    {id:'a_furniture',label:'Outdoor furniture set out & cleaned'},
+    {id:'a_vehicles',label:'Vehicles & golf carts charged & ready'},
+    {id:'a_lawn',label:'Lawn mowed, edged & looking sharp'},
+    {id:'a_irrigation',label:'Irrigation system running properly'},
+  ]},
+  {section:'stock',label:'🛍️ Stocking & Staging',items:[
+    {id:'a_pantry',label:'Pantry basics stocked'},
+    {id:'a_toiletries',label:'Toiletries restocked in all bathrooms'},
+    {id:'a_welcome',label:'Welcome touches ready (flowers, lei, etc.)'},
+    {id:'a_keys',label:'Keys & access materials ready for owner'},
+    {id:'a_info',label:'Info binder / welcome materials set out'},
+  ]},
+];
+
+const SOP_DEPARTURE=[
+  {section:'inspect',label:'🔍 Post-Departure Inspection',items:[
+    {id:'d_walkthrough',label:'Full walk-through all rooms completed'},
+    {id:'d_damage',label:'Damage or issues noted & documented'},
+    {id:'d_belongings',label:'Checked for left-behind belongings'},
+    {id:'d_photos',label:'Photos taken of key areas for records'},
+  ]},
+  {section:'shutdown',label:'🔒 Shutdown & Secure',items:[
+    {id:'d_locks',label:'All doors & windows locked'},
+    {id:'d_alarm',label:'Alarm set to away / vacancy mode'},
+    {id:'d_ac',label:'AC adjusted to storage temp (78–80°F)'},
+    {id:'d_water_heater',label:'Water heater set to vacation mode'},
+    {id:'d_lights',label:'All lights off — switches verified'},
+    {id:'d_valuables',label:'Valuables properly secured'},
+  ]},
+  {section:'outdoor',label:'🌿 Outdoor Items',items:[
+    {id:'d_cushions',label:'Pool & patio cushions brought inside'},
+    {id:'d_furniture_cov',label:'Outdoor furniture covered'},
+    {id:'d_vehicles',label:'Vehicles & golf carts secured & stored'},
+    {id:'d_pool_cover',label:'Pool area secured (cover if applicable)'},
+    {id:'d_outdoor_items',label:'Outdoor décor & loose items stored away'},
+  ]},
+  {section:'vendors',label:'👷 Vendor Follow-Up',items:[
+    {id:'d_pest_sched',label:'Pest control service scheduled'},
+    {id:'d_pool_sched',label:'Pool maintenance service notified'},
+    {id:'d_hvac_sched',label:'HVAC service reviewed / scheduled if needed'},
+    {id:'d_clean_sched',label:'Pre-arrival deep clean scheduled'},
+  ]},
+  {section:'inventory',label:'📦 Inventory & Restock Notes',items:[
+    {id:'d_inv_supplies',label:'Supplies to reorder logged'},
+    {id:'d_inv_damage',label:'Damaged or worn items noted'},
+    {id:'d_inv_linen',label:'Linen & towel condition checked'},
+  ]},
+];
+
+const CHECK_ITEMS={
+  interior:[
+    {id:'i_entry',label:'Entry & Foyer'},
+    {id:'i_kitchen',label:'Kitchen & Appliances'},
+    {id:'i_living',label:'Living & Dining'},
+    {id:'i_master',label:'Master Bedroom & Bath'},
+    {id:'i_guest_beds',label:'Guest Bedrooms'},
+    {id:'i_guest_baths',label:'Guest Bathrooms'},
+    {id:'i_laundry',label:'Laundry Room'},
+    {id:'i_hvac',label:'HVAC / AC Systems'},
+    {id:'i_garage',label:'Garage / Storage'},
+  ],
+  exterior:[
+    {id:'e_lawn',label:'Lawn & Landscaping'},
+    {id:'e_pool',label:'Pool & Spa'},
+    {id:'e_walls',label:'Exterior Walls & Paint'},
+    {id:'e_roof',label:'Roof (visible areas)'},
+    {id:'e_driveway',label:'Driveway & Parking'},
+    {id:'e_irrigation',label:'Irrigation System'},
+    {id:'e_lighting',label:'Exterior Lighting'},
+    {id:'e_gates',label:'Gates & Security'},
+  ]
+};
+
+function checkBadge(pid){
+  const s=checkStatus(pid),lc=lastCheck(pid);
+  if(s==='never')return'<span class="badge b-gray">Never checked</span>';
+  const d=daysBetween(lc.date,today());
+  if(s==='ok')return`<span class="badge b-green">✓ ${d}d ago</span>`;
+  if(s==='due')return`<span class="badge b-orange">Due · ${d}d ago</span>`;
+  return`<span class="badge b-red">Overdue · ${d}d ago</span>`;
+}
+
+/* ═══════════════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════════════ */
+let curTab='home';
+let maintFilter='all';
+let invoiceFilter='all';
+let projFilter='all';
+let calYear=new Date().getFullYear();
+let calMonth=new Date().getMonth();
+
+const TABS=[
+  {id:'home',   label:'Today',      icon:()=>icoHome(curTab==='home')},
+  {id:'props',  label:'Properties', icon:()=>icoBuilding(curTab==='props')},
+  {id:'checks', label:'Checks',     icon:()=>icoCheck(curTab==='checks')},
+  {id:'maint',  label:'Maintenance',icon:()=>icoWrench(curTab==='maint')},
+  {id:'invoices',label:'Invoices',  icon:()=>icoInvoice(curTab==='invoices')},
+  {id:'cal',    label:'Calendar',   icon:()=>icoCal(curTab==='cal')},
+  {id:'projects',label:'Projects',  icon:()=>icoProject(curTab==='projects')},
+  {id:'vendors',label:'Vendors',    icon:()=>icoPeople(curTab==='vendors')},
+  {id:'sops',   label:'SOPs',       icon:()=>icoSOP(curTab==='sops')},
+];
+
+function isDesktop(){return window.innerWidth>=768;}
+
+function nav(tab){
+  curTab=tab;
+  const tabs=TABS.map(t=>`<button class="tab-btn${curTab===t.id?' active':''}" onclick="nav('${t.id}')">${t.icon()}<span>${t.label}</span></button>`).join('');
+  const tb=document.getElementById('tabbar');
+  const logoSrc=localStorage.getItem('kmrs_logo');
+  const logoHtml=logoSrc?`<img src="${logoSrc}" alt="KMRS">`:`<div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#007AFF,#5856D6);display:flex;align-items:center;justify-content:center;color:white;font-size:12px;font-weight:800">KM</div>`;
+  if(isDesktop()){
+    tb.innerHTML=`<div class="sidebar-logo">${logoHtml}<span class="logo-txt">KMRS</span></div>
+      ${tabs}
+      <div class="sidebar-footer">
+        <button class="sidebar-footer-btn" onclick="setLogo()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>Set Logo</button>
+        <button class="sidebar-footer-btn" onclick="exportData()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 3v12M8 11l4 4 4-4M4 17v1a2 2 0 002 2h12a2 2 0 002-2v-1"/></svg>Export Backup</button>
+        <button class="sidebar-footer-btn" onclick="importDataPrompt()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 21V9M8 13l4-4 4 4M4 7V6a2 2 0 012-2h12a2 2 0 012 2v1"/></svg>Import Backup</button>
+      </div>`;
+  }else{
+    tb.innerHTML=tabs;
+  }
+  const renders={home:renderHome,props:renderProps,checks:renderChecks,maint:renderMaint,invoices:renderInvoices,cal:renderCalendar,projects:renderProjects,vendors:renderVendors,sops:renderSOPs};
+  const page=document.getElementById('page');
+  page.innerHTML=renders[tab]?renders[tab]():'';
+  page.scrollTop=0;
+  // Scroll active tab into view on mobile
+  if(!isDesktop()){
+    const activeBtn=tb.querySelector('.tab-btn.active');
+    if(activeBtn)activeBtn.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+  }
+}
+
+function setLogo(){
+  const inp=document.createElement('input');inp.type='file';inp.accept='image/*';
+  inp.onchange=async e=>{
+    const file=e.target.files[0];if(!file)return;
+    const data=await compressImage(file,128,0.9);
+    localStorage.setItem('kmrs_logo',data);
+    nav(curTab);
+    toast('✅ Logo updated!');
+  };
+  inp.click();
+}
+
+/* ═══════════════════════════════════════════════
+   SVG ICONS
+═══════════════════════════════════════════════ */
+function icoHome(a){return`<svg viewBox="0 0 24 24" fill="${a?'currentColor':'none'}" stroke="${a?'none':'currentColor'}" stroke-width="1.6"><path d="M3 12L12 3l9 9" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 10.5V20a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-9.5" stroke-linecap="round"/></svg>`;}
+function icoBuilding(a){return`<svg viewBox="0 0 24 24" fill="${a?'currentColor':'none'}" stroke="${a?'none':'currentColor'}" stroke-width="1.6"><rect x="3" y="2" width="18" height="20" rx="2"/><path d="M8 6h2M8 10h2M8 14h2M8 18h2M14 6h2M14 10h2M14 14h2M14 18h2" stroke-linecap="round"/></svg>`;}
+function icoCheck(a){return`<svg viewBox="0 0 24 24" fill="${a?'currentColor':'none'}" stroke="${a?'none':'currentColor'}" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12l3 3 5-5" stroke="${a?'white':'currentColor'}" stroke-linecap="round" stroke-linejoin="round"/></svg>`;}
+function icoWrench(a){return`<svg viewBox="0 0 24 24" fill="${a?'currentColor':'none'}" stroke="${a?'none':'currentColor'}" stroke-width="1.6"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3-3a7 7 0 01-9.7 9.7l-5.3 5.3a2 2 0 01-2.8-2.8l5.3-5.3A7 7 0 0114.7 6.3z" stroke-linecap="round"/></svg>`;}
+function icoPeople(a){return`<svg viewBox="0 0 24 24" fill="${a?'currentColor':'none'}" stroke="${a?'none':'currentColor'}" stroke-width="1.6"><circle cx="9" cy="7" r="4"/><path d="M3 21v-1a6 6 0 0112 0v1M16 11a4 4 0 010 8M21 21v-1a4 4 0 00-3-3.87" stroke-linecap="round"/></svg>`;}
+function icoSOP(a){return`<svg viewBox="0 0 24 24" fill="${a?'currentColor':'none'}" stroke="${a?'none':'currentColor'}" stroke-width="1.6"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M9 7h6M9 11h6M9 15h4" stroke="${a?'white':'currentColor'}" stroke-linecap="round"/></svg>`;}
+function icoInvoice(a){return`<svg viewBox="0 0 24 24" fill="${a?'currentColor':'none'}" stroke="${a?'none':'currentColor'}" stroke-width="1.6"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 8h8M8 12h8M8 16h5" stroke="${a?'white':'currentColor'}" stroke-linecap="round"/><circle cx="18" cy="18" r="4" fill="${a?'white':'none'}" stroke="${a?'none':'currentColor'}" stroke-width="1.6"/><path d="M18 16.5v3M16.5 18h3" stroke="${a?'currentColor':'currentColor'}" stroke-width="1.4" stroke-linecap="round"/></svg>`;}
+function icoCal(a){return`<svg viewBox="0 0 24 24" fill="${a?'currentColor':'none'}" stroke="${a?'none':'currentColor'}" stroke-width="1.6"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18" stroke="${a?'white':'currentColor'}" stroke-linecap="round"/><circle cx="8" cy="15" r="1" fill="${a?'white':'currentColor'}"/><circle cx="12" cy="15" r="1" fill="${a?'white':'currentColor'}"/><circle cx="16" cy="15" r="1" fill="${a?'white':'currentColor'}"/></svg>`;}
+function icoProject(a){return`<svg viewBox="0 0 24 24" fill="${a?'currentColor':'none'}" stroke="${a?'none':'currentColor'}" stroke-width="1.6"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4" stroke="${a?'white':'currentColor'}" stroke-linecap="round"/><path d="M7 9l3 3 3-3 3 3" stroke="${a?'white':'currentColor'}" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>`;}
+function icoChevron(){return`<svg width="7" height="12" viewBox="0 0 7 12" fill="none" class="chev"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`;}
+function icoPlus(){return`<svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="white" stroke-width="2.5" stroke-linecap="round"/></svg>`;}
+function icoShare(){return`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M12 3v12M8 7l4-4 4 4"/></svg>`;}
+
+
+/* ═══════════════════════════════════════════════
+   HOME / TODAY
+═══════════════════════════════════════════════ */
+function renderHome(){
+  const now=new Date();
+  const dateStr=now.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+  const h=now.getHours();
+  const greet=h<12?'Good morning':h<18?'Good afternoon':'Good evening';
+  const needCheck=db.properties.filter(p=>['due','overdue','never'].includes(checkStatus(p.id)));
+  const overdueMaint=db.maintenance.filter(m=>maintStatus(m)==='overdue').length;
+  const dueSoonMaint=db.maintenance.filter(m=>maintStatus(m)==='due_soon').length;
+  const overdueInv=(db.invoices||[]).filter(i=>calcInvoiceStatus(i)==='overdue');
+  const dueInv=(db.invoices||[]).filter(i=>calcInvoiceStatus(i)==='unpaid'&&i.dueDate&&daysBetween(today(),i.dueDate)<=7);
+  const upcoming=db.maintenance.filter(m=>['overdue','due_soon'].includes(maintStatus(m))).sort((a,b)=>(a.nextDue||'9999')>(b.nextDue||'9999')?1:-1).slice(0,4);
+  let out=`<div class="greeting"><h1>${greet} 👋</h1><p>${dateStr}</p></div>`;
+  // Show install banner if opened locally
+  if(location.protocol==='file:'){
+    out+=`<div style="margin:0 16px 14px;background:linear-gradient(135deg,#007AFF,#5856D6);border-radius:14px;padding:16px;cursor:pointer" onclick="showInstallGuide()">
+      <div style="color:white;font-size:15px;font-weight:700">📲 Install KMRS on iPhone</div>
+      <div style="color:rgba(255,255,255,0.85);font-size:13px;margin-top:4px">Tap to see step-by-step instructions →</div>
+    </div>`;
+  }
+  out+=`<div class="stat-row">
+    <div class="stat-card"><div class="stat-num" style="color:var(--blue)">${db.properties.length}</div><div class="stat-lbl">Properties</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:${needCheck.length>0?'var(--red)':'var(--green)'}">${needCheck.length}</div><div class="stat-lbl">Checks Needed</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:${overdueInv.length>0?'var(--red)':dueSoonMaint>0?'var(--orange)':'var(--green)'}">${overdueInv.length+dueSoonMaint}</div><div class="stat-lbl">Action Items</div></div>
+  </div>`;
+  if(db.properties.length===0){
+    out+=`<div class="empty"><div class="empty-ico">🏡</div><h3>Welcome to KMRS</h3><p>Add your managed properties to get started.</p><button class="btn btn-primary mt8" onclick="nav('props')">Add First Property</button></div>`;
+    return out;
+  }
+  if(overdueInv.length>0){
+    const total=overdueInv.reduce((s,i)=>s+Number(i.amount||0),0);
+    out+=`<div class="sec-label">🚨 Overdue Invoices</div><div class="card">`;
+    overdueInv.slice(0,3).forEach(inv=>{
+      out+=`<div class="card-row" onclick="nav('invoices')">
+        <div class="crt"><h3>${esc(inv.vendor||'Invoice #'+inv.invoiceNum)}</h3><p>Due ${fmtDate(inv.dueDate)}${inv.property?' · '+esc(inv.property):''}</p></div>
+        <div class="crr"><span class="badge b-red">$${Number(inv.amount||0).toLocaleString()}</span></div>
+      </div>`;
+    });
+    if(overdueInv.length>3)out+=`<div class="card-row" onclick="nav('invoices')"><div class="crt" style="color:var(--text3)">+ ${overdueInv.length-3} more overdue</div><div class="crr">${icoChevron()}</div></div>`;
+    out+=`</div>`;
+  }
+  if(dueInv.length>0&&overdueInv.length===0){
+    out+=`<div class="sec-label">💸 Due This Week</div><div class="card">`;
+    dueInv.slice(0,3).forEach(inv=>{
+      const d=daysFrom(inv.dueDate);
+      out+=`<div class="card-row" onclick="nav('invoices')">
+        <div class="crt"><h3>${esc(inv.vendor||'Invoice #'+inv.invoiceNum)}</h3><p>Due in ${d}d · $${Number(inv.amount||0).toLocaleString()}</p></div>
+        <div class="crr"><span class="badge b-orange">Due Soon</span></div>
+      </div>`;
+    });
+    out+=`</div>`;
+  }
+  if(needCheck.length>0){
+    out+=`<div class="sec-label">⚠️ Checks Needed</div><div class="card">`;
+    needCheck.forEach(p=>{
+      const s=checkStatus(p.id),lc=lastCheck(p.id);
+      const bc=s==='overdue'?'b-red':s==='due'?'b-orange':'b-gray';
+      const bl=s==='overdue'?'Overdue':s==='due'?'Due':'Never';
+      out+=`<div class="card-row" onclick="startCheck('${p.id}')">
+        <div class="crt"><h3>${esc(p.name)}</h3><p>${lc?'Last: '+fmtDate(lc.date):'No checks yet'}</p></div>
+        <div class="crr"><span class="badge ${bc}">${bl}</span>${icoChevron()}</div>
+      </div>`;
+    });
+    out+=`</div>`;
+  }
+  if(upcoming.length>0){
+    out+=`<div class="sec-label">🔧 Maintenance Due</div><div class="card">`;
+    upcoming.forEach(m=>{
+      const cat=CATS[m.category]||CATS.general,ms=maintStatus(m),d=m.nextDue?daysFrom(m.nextDue):null;
+      const sub=d===null?'Unscheduled':d<0?`${Math.abs(d)}d overdue`:`In ${d}d`;
+      out+=`<div class="card-row" onclick="nav('maint')">
+        <div class="cri" style="background:${cat.color}22"><span style="font-size:17px">${cat.emoji}</span></div>
+        <div class="crt"><h3>${esc(m.name)}</h3><p>${esc(propName(m.propertyId))}</p></div>
+        <div class="crr"><span class="badge ${ms==='overdue'?'b-red':'b-orange'}">${esc(sub)}</span></div>
+      </div>`;
+    });
+    out+=`</div>`;
+  }
+  if(needCheck.length===0&&upcoming.length===0&&overdueInv.length===0){
+    out+=`<div class="empty"><div class="empty-ico">✅</div><h3>All Caught Up!</h3><p>No checks, maintenance, or invoices need attention right now.</p></div>`;
+  }
+  out+=`<div style="padding:0 16px 8px"><button class="btn btn-secondary btn-block" onclick="generateReport()" style="gap:8px">${icoShare()} Generate Report</button></div>`;
+  return out;
+}
+
+/* ═══════════════════════════════════════════════
+   PROPERTIES
+═══════════════════════════════════════════════ */
+function renderProps(){
+  let h=`<div class="pg-header"><h1>Properties</h1><p>${db.properties.length} managed home${db.properties.length!==1?'s':''}</p></div>`;
+  if(db.properties.length===0){
+    h+=`<div class="empty"><div class="empty-ico">🏡</div><h3>No Properties Yet</h3><p>Add your managed homes to track weekly checks, maintenance, and vendor services.</p></div>`;
+  }else{
+    h+=`<div style="height:8px"></div>`;
+    db.properties.forEach(p=>{
+      const overM=db.maintenance.filter(m=>m.propertyId===p.id&&maintStatus(m)==='overdue').length;
+      h+=`<div class="card" onclick="viewProp('${p.id}')">
+        <div style="padding:14px 16px">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start">
+            <div style="flex:1;min-width:0"><div style="font-size:18px;font-weight:600">${esc(p.name)}</div>${p.address?`<div style="font-size:13px;color:var(--text3);margin-top:2px">${esc(p.address)}</div>`:''}</div>
+            ${icoChevron()}
+          </div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">
+            ${checkBadge(p.id)}
+            ${overM>0?`<span class="badge b-red">⚠️ ${overM} maint overdue</span>`:''}
+            ${p.hasPool?'<span class="badge b-blue">🏊 Pool/Spa</span>':''}
+            ${p.bedrooms?`<span class="badge b-gray">🛏 ${p.bedrooms}bd</span>`:''}
+          </div>
+          ${p.owner?`<div style="font-size:12px;color:var(--text3);margin-top:8px">Owner: ${esc(p.owner)}</div>`:''}
+        </div>
+      </div>`;
+    });
+  }
+  h+=`<button class="fab" onclick="propSheet()">${icoPlus()}</button>`;
+  return h;
+}
+
+function viewProp(id){
+  const p=db.properties.find(x=>x.id===id);if(!p)return;
+  const chks=db.checks.filter(c=>c.propertyId===id).sort((a,b)=>b.date.localeCompare(a.date));
+  const mItems=db.maintenance.filter(m=>m.propertyId===id);
+  let h=`<div class="sh-head"><div class="sh-title">🏡 ${esc(p.name)}</div><button class="sh-close" onclick="closeSheet()">✕</button></div>
+  <div style="margin:0 16px 14px"><div style="background:var(--card);border-radius:12px;padding:14px">
+    ${p.address?`<div style="font-size:14px;color:var(--text3)">📍 ${esc(p.address)}</div>`:''}
+    ${p.owner?`<div style="font-size:14px;color:var(--text3);margin-top:5px">👤 ${esc(p.owner)}</div>`:''}
+    ${p.ownerPhone?`<div style="font-size:14px;margin-top:5px"><a href="tel:${esc(p.ownerPhone)}">📞 ${esc(p.ownerPhone)}</a></div>`:''}
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">
+      ${p.bedrooms?`<span class="badge b-gray">🛏 ${p.bedrooms} bed</span>`:''}
+      ${p.bathrooms?`<span class="badge b-gray">🛁 ${p.bathrooms} bath</span>`:''}
+      ${p.hasPool?'<span class="badge b-blue">🏊 Pool/Spa</span>':''}
+    </div>
+    ${p.notes?`<div style="font-size:13px;color:var(--text3);border-top:0.5px solid var(--sep);margin-top:10px;padding-top:10px">${esc(p.notes)}</div>`:''}
+  </div>
+  <div style="display:flex;gap:10px;margin-top:12px">
+    <button class="btn btn-primary" style="flex:1" onclick="closeSheet();startCheck('${id}')">✅ Start Check</button>
+    <button class="btn btn-secondary" style="flex:1" onclick="propSheet('${id}')">✏️ Edit</button>
+    <button class="btn btn-secondary" onclick="generateReport('${id}')" style="padding:13px 14px">${icoShare()}</button>
+  </div></div>
+  <div class="sec-label">Recent Checks</div><div class="card">`;
+  if(chks.length===0){h+=`<div class="card-section" style="color:var(--text3);text-align:center;font-size:14px">No checks yet</div>`;}
+  else{chks.slice(0,5).forEach(c=>{const fl=c.flags?c.flags.length:0;h+=`<div class="card-row" onclick="viewCheckRecord('${c.id}')"><div class="crt"><h3>${fmtDate(c.date)}</h3><p>${fl>0?`⚠️ ${fl} issue${fl!==1?'s':''} flagged`:'✅ All clear'}</p></div><div class="crr">${icoChevron()}</div></div>`;});}
+  h+=`</div><div class="sec-label">Maintenance</div><div class="card">`;
+  if(mItems.length===0){h+=`<div class="card-section" style="color:var(--text3);text-align:center;font-size:14px">No schedules added</div>`;}
+  else{mItems.forEach(m=>{const cat=CATS[m.category]||CATS.general,ms=maintStatus(m);const bc=ms==='overdue'?'b-red':ms==='due_soon'?'b-orange':'b-green';h+=`<div class="card-row"><div style="font-size:18px;margin-right:10px">${cat.emoji}</div><div class="crt"><h3>${esc(m.name)}</h3><p>${m.nextDue?'Due: '+fmtDate(m.nextDue):'Not scheduled'}</p></div><div class="crr"><span class="badge ${bc}">${ms==='overdue'?'Overdue':ms==='due_soon'?'Due Soon':'OK'}</span></div></div>`;});}
+  h+=`</div><div style="height:16px"></div>`;
+  openSheet(h);
+}
+
+function propSheet(editId){
+  const p=editId?db.properties.find(x=>x.id===editId):null;
+  let h=`<div class="sh-head"><div class="sh-title">${p?'Edit':'Add'} Property</div><button class="sh-close" onclick="closeSheet()">✕</button></div>
+  <div class="fg"><label>Property Name *</label><input class="fi" id="pf-name" placeholder="e.g. Kahala Estate" value="${p?esc(p.name):''}"/></div>
+  <div class="fg"><label>Address</label><input class="fi" id="pf-addr" placeholder="Street, Honolulu, HI" value="${p?esc(p.address||''):''}"/></div>
+  <div class="fg"><label>Owner Name</label><input class="fi" id="pf-owner" placeholder="Owner's full name" value="${p?esc(p.owner||''):''}"/></div>
+  <div class="fg"><label>Owner Phone</label><input class="fi" id="pf-phone" type="tel" placeholder="(808) 555-0000" value="${p?esc(p.ownerPhone||''):''}"/></div>
+  <div class="frow"><div class="fg"><label>Bedrooms</label><input class="fi" id="pf-beds" type="number" min="1" max="20" placeholder="4" value="${p&&p.bedrooms?p.bedrooms:''}"/></div>
+  <div class="fg"><label>Bathrooms</label><input class="fi" id="pf-baths" type="number" min="1" max="20" placeholder="3" value="${p&&p.bathrooms?p.bathrooms:''}"/></div></div>
+  <div class="tog-row"><span>🏊 Has Pool / Spa</span><label class="toggle"><input type="checkbox" id="pf-pool"${p&&p.hasPool?' checked':''}><span class="tog-sl"></span></label></div>
+  <div class="fg"><label>Notes / Access Info</label><textarea class="fi fta" id="pf-notes" placeholder="Gate codes, alarm info, special instructions...">${p?esc(p.notes||''):''}</textarea></div>
+  <div style="padding:6px 16px 8px"><button class="btn btn-primary btn-block" onclick="saveProp('${editId||''}')">${p?'Save Changes':'Add Property'}</button></div>
+  ${p?`<div style="padding:0 16px 8px"><button class="btn btn-red btn-block" onclick="deleteProp('${editId}')">Delete Property</button></div>`:''}`;
+  openSheet(h);
+}
+
+function saveProp(editId){
+  const name=document.getElementById('pf-name').value.trim();
+  if(!name){alert('Property name is required.');return;}
+  const p={id:editId||uid(),name,address:document.getElementById('pf-addr').value.trim(),owner:document.getElementById('pf-owner').value.trim(),ownerPhone:document.getElementById('pf-phone').value.trim(),bedrooms:parseInt(document.getElementById('pf-beds').value)||null,bathrooms:parseInt(document.getElementById('pf-baths').value)||null,hasPool:document.getElementById('pf-pool').checked,notes:document.getElementById('pf-notes').value.trim(),createdAt:editId?(db.properties.find(x=>x.id===editId)?.createdAt||today()):today()};
+  if(editId){const i=db.properties.findIndex(x=>x.id===editId);if(i>=0)db.properties[i]=p;}else db.properties.push(p);
+  save();closeSheet();nav(curTab);
+}
+
+function deleteProp(id){
+  if(!confirm('Delete this property and ALL its records?'))return;
+  db.properties=db.properties.filter(x=>x.id!==id);
+  db.checks=db.checks.filter(x=>x.propertyId!==id);
+  db.maintenance=db.maintenance.filter(x=>x.propertyId!==id);
+  save();closeSheet();nav(curTab);
+}
+
+/* ═══════════════════════════════════════════════
+   WEEKLY CHECKS
+═══════════════════════════════════════════════ */
+let ckData=null;
+
+function renderChecks(){
+  let h=`<div class="pg-header"><h1>Weekly Checks</h1><p>${db.checks.length} check${db.checks.length!==1?'s':''} completed</p></div>`;
+  if(db.properties.length===0){h+=`<div class="empty"><div class="empty-ico">📋</div><h3>No Properties</h3><p>Add properties first.</p><button class="btn btn-primary mt8" onclick="nav('props')">Add Property</button></div>`;return h;}
+  h+=`<div class="sec-label">Start a Check</div><div class="card">`;
+  db.properties.forEach(p=>{
+    const s=checkStatus(p.id),lc=lastCheck(p.id);
+    const bc=s==='ok'?'b-green':s==='overdue'?'b-red':s==='due'?'b-orange':'b-gray';
+    const bl=s==='ok'?'Current':s==='overdue'?'Overdue':s==='due'?'Due':'Never';
+    h+=`<div class="card-row" onclick="startCheck('${p.id}')"><div class="crt"><h3>${esc(p.name)}</h3><p>${lc?fmtDate(lc.date):'No checks yet'}</p></div><div class="crr"><span class="badge ${bc}">${bl}</span>${icoChevron()}</div></div>`;
+  });
+  h+=`</div>`;
+  const recent=[...db.checks].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,15);
+  if(recent.length>0){
+    h+=`<div class="sec-label">Check History</div><div class="card">`;
+    recent.forEach(c=>{
+      const fl=c.flags?c.flags.length:0,ph=c.photos?c.photos.length:0;
+      h+=`<div class="card-row" onclick="viewCheckRecord('${c.id}')"><div class="crt"><h3>${esc(propName(c.propertyId))}</h3><p>${fmtDate(c.date)} · ${fl>0?`⚠️ ${fl} issue${fl!==1?'s':''}`:' ✅ All clear'}${ph>0?` · 📷 ${ph}`:''}</p></div><div class="crr">${icoChevron()}</div></div>`;
+    });
+    h+=`</div>`;
+  }
+  return h;
+}
+
+const CK_STEPS=['Interior','Exterior','Vendors','Issues','Photos','Review'];
+
+function startCheck(pid){
+  const p=db.properties.find(x=>x.id===pid);if(!p)return;
+  ckData={id:uid(),propertyId:pid,date:today(),items:{},vendors:[],flags:[],photos:[]};
+  [...CHECK_ITEMS.interior,...CHECK_ITEMS.exterior].forEach(i=>{ckData.items[i.id]={status:'ok',notes:''};});
+  renderCheckStep(p,0);
+}
+
+function renderCheckStep(p,step){
+  const pct=Math.round((step/CK_STEPS.length)*100);
+  let content='';
+  if(step===0||step===1){
+    const items=step===0?CHECK_ITEMS.interior:CHECK_ITEMS.exterior;
+    const title=step===0?'Interior Inspection':'Exterior Inspection';
+    content=`<div style="padding:0 16px 10px"><div style="font-size:18px;font-weight:600">${title}</div><div style="font-size:13px;color:var(--text3);margin-top:3px">Tap ✅ OK · ⚠️ Issue · 🚩 Flag</div></div><div style="padding:0 16px">`;
+    items.forEach(item=>{
+      const cur=ckData.items[item.id]||{status:'ok',notes:''};
+      content+=`<div class="ck-item" id="ci-${item.id}"><div class="ck-info"><div class="ck-label">${esc(item.label)}</div><input placeholder="Notes (optional)" value="${esc(cur.notes||'')}" oninput="ckData.items['${item.id}'].notes=this.value"/></div><div class="ck-btns"><button class="ck-btn${cur.status==='ok'?' sel-ok':''}" onclick="setCkStatus('${item.id}','ok',this)">✅</button><button class="ck-btn${cur.status==='issue'?' sel-issue':''}" onclick="setCkStatus('${item.id}','issue',this)">⚠️</button><button class="ck-btn${cur.status==='flag'?' sel-flag':''}" onclick="setCkStatus('${item.id}','flag',this)">🚩</button></div></div>`;
+    });
+    content+=`</div>`;
+  }
+  if(step===2){
+    content=`<div style="padding:0 16px 10px"><div style="font-size:18px;font-weight:600">Vendor Visits</div><div style="font-size:13px;color:var(--text3);margin-top:3px">Log any service providers this week.</div></div>
+    <div id="ve-list">${ckData.vendors.map((v,i)=>veEntry(v,i)).join('')}</div>
+    <div style="padding:4px 16px"><button class="btn btn-secondary btn-block" onclick="addVE()">+ Add Vendor Visit</button></div>`;
+  }
+  if(step===3){
+    content=`<div style="padding:0 16px 10px"><div style="font-size:18px;font-weight:600">Issues & Flags</div><div style="font-size:13px;color:var(--text3);margin-top:3px">Log anything needing follow-up.</div></div>
+    <div id="fl-list">${ckData.flags.map((f,i)=>flEntry(f,i)).join('')}</div>
+    <div style="padding:4px 16px"><button class="btn btn-secondary btn-block" onclick="addFL()">+ Add Issue</button></div>`;
+  }
+  if(step===4){
+    content=`<div style="padding:0 16px 10px"><div style="font-size:18px;font-weight:600">📷 Photos</div><div style="font-size:13px;color:var(--text3);margin-top:3px">Attach photos for documentation.</div></div>
+    <div class="photo-grid" id="active-photos">
+      <div class="photo-add" onclick="pickActivePhoto('check')"><span>📷</span><span>Add Photo</span></div>
+    </div>`;
+    // Render already-added photos
+    if(ckData.photos&&ckData.photos.length>0){
+      content+=`<script>setTimeout(()=>loadPhotosIntoGrid('active-photos',${JSON.stringify(ckData.photos)},true),100);<\/script>`;
+    }
+  }
+  if(step===5){
+    const iss=Object.entries(ckData.items).filter(([k,v])=>v.status!=='ok');
+    content=`<div style="padding:0 16px 10px"><div style="font-size:18px;font-weight:600">Review & Submit</div></div>
+    <div class="card">
+      <div class="card-row"><div class="crt"><h3>Property</h3></div><div class="crr" style="font-weight:500">${esc(p.name)}</div></div>
+      <div class="card-row"><div class="crt"><h3>Check Date</h3></div><div class="crr"><input type="date" id="ck-date" value="${ckData.date}" onchange="ckData.date=this.value" style="border:none;font-size:14px;color:var(--text);background:none;text-align:right;-webkit-appearance:none;"/></div></div>
+      <div class="card-row"><div class="crt"><h3>Items with Issues</h3></div><div class="crr">${iss.length>0?`<span class="badge b-orange">${iss.length}</span>`:'<span class="badge b-green">None</span>'}</div></div>
+      <div class="card-row"><div class="crt"><h3>Flags Raised</h3></div><div class="crr">${ckData.flags.length>0?`<span class="badge b-red">${ckData.flags.length}</span>`:'<span class="badge b-green">None</span>'}</div></div>
+      <div class="card-row"><div class="crt"><h3>Vendor Visits</h3></div><div class="crr">${ckData.vendors.length>0?`<span class="badge b-blue">${ckData.vendors.length}</span>`:'<span class="badge b-gray">None</span>'}</div></div>
+      <div class="card-row"><div class="crt"><h3>Photos</h3></div><div class="crr">${ckData.photos&&ckData.photos.length>0?`<span class="badge b-teal">📷 ${ckData.photos.length}</span>`:'<span class="badge b-gray">None</span>'}</div></div>
+    </div>`;
+  }
+  const h=`<div class="sh-head"><div class="sh-title">📋 ${esc(p.name)}</div><button class="sh-close" onclick="if(confirm('Cancel this check?'))closeSheet()">✕</button></div>
+  <div class="prog-wrap">
+    <div class="prog-steps">${CK_STEPS.map((s,i)=>`<span class="${i===step?'cur':''}">${s}</span>`).join('')}</div>
+    <div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div>
+    <div class="prog-label"><span>${CK_STEPS[step]}</span><span>${step+1}/${CK_STEPS.length}</span></div>
+  </div>
+  <div style="height:10px"></div>
+  <div id="ck-step">${content}</div>
+  <div style="padding:16px 16px 8px;display:flex;gap:10px">
+    ${step>0?`<button class="btn btn-secondary" style="flex:1" onclick="renderCheckStep(db.properties.find(x=>x.id==='${p.id}'),${step-1})">← Back</button>`:''}
+    ${step<CK_STEPS.length-1?`<button class="btn btn-primary" style="flex:2" onclick="renderCheckStep(db.properties.find(x=>x.id==='${p.id}'),${step+1})">Continue →</button>`:`<button class="btn btn-green" style="flex:2" onclick="submitCheck()">✅ Submit Check</button>`}
+  </div>`;
+  openSheet(h);
+}
+
+function setCkStatus(itemId,status,btn){ckData.items[itemId].status=status;const row=btn.closest('.ck-btns');row.querySelectorAll('.ck-btn').forEach(b=>{b.className='ck-btn';});btn.classList.add(status==='ok'?'sel-ok':status==='issue'?'sel-issue':'sel-flag');}
+function veEntry(v,i){return`<div class="ve-card"><select class="fi fsel" onchange="ckData.vendors[${i}].vendorId=this.value"><option value="">Select vendor...</option>${db.vendors.map(v2=>`<option value="${v2.id}"${v.vendorId===v2.id?' selected':''}>${esc(v2.name)}</option>`).join('')}</select><input class="fi" placeholder="Service performed" value="${esc(v.service||'')}" oninput="ckData.vendors[${i}].service=this.value"/><input class="fi" placeholder="Notes" value="${esc(v.notes||'')}" oninput="ckData.vendors[${i}].notes=this.value"/><button class="ve-del" onclick="ckData.vendors.splice(${i},1);document.getElementById('ve-list').innerHTML=ckData.vendors.map((v,j)=>veEntry(v,j)).join('')">Remove</button></div>`;}
+function flEntry(f,i){return`<div class="fl-card"><input class="fi" placeholder="Describe the issue *" value="${esc(f.description||'')}" oninput="ckData.flags[${i}].description=this.value"/><div class="pri-row"><button class="pri-btn${f.priority==='low'?' sel-low':''}" onclick="setFlagPri(${i},'low',this)">🟡 Low</button><button class="pri-btn${f.priority==='medium'||!f.priority?' sel-med':''}" onclick="setFlagPri(${i},'medium',this)">🟠 Med</button><button class="pri-btn${f.priority==='high'?' sel-high':''}" onclick="setFlagPri(${i},'high',this)">🔴 High</button></div></div>`;}
+function setFlagPri(i,pri,btn){ckData.flags[i].priority=pri;const row=btn.closest('.pri-row');row.querySelectorAll('.pri-btn').forEach(b=>{b.className='pri-btn';});btn.classList.add(pri==='low'?'sel-low':pri==='medium'?'sel-med':'sel-high');}
+function addVE(){ckData.vendors.push({vendorId:'',service:'',notes:''});document.getElementById('ve-list').innerHTML=ckData.vendors.map((v,i)=>veEntry(v,i)).join('');}
+function addFL(){ckData.flags.push({description:'',priority:'medium'});document.getElementById('fl-list').innerHTML=ckData.flags.map((f,i)=>flEntry(f,i)).join('');}
+
+function submitCheck(){
+  if(!ckData)return;
+  db.checks.push(ckData);save();
+  const fl=ckData.flags.length;
+  closeSheet();ckData=null;nav(curTab);
+  setTimeout(()=>toast(fl>0?`⚠️ Check saved · ${fl} issue${fl!==1?'s':''} flagged`:'✅ Check saved!'),300);
+}
+
+function viewCheckRecord(id){
+  const c=db.checks.find(x=>x.id===id);if(!c)return;
+  const iss=Object.entries(c.items||{}).filter(([k,v])=>v.status!=='ok');
+  let h=`<div class="sh-head"><div class="sh-title">${esc(propName(c.propertyId))}</div><button class="sh-close" onclick="closeSheet()">✕</button></div>
+  <div style="padding:0 16px 8px;color:var(--text3);font-size:14px">📅 ${fmtDate(c.date)}</div>
+  <div class="sec-label">Summary</div><div class="card">
+    <div class="card-row"><div class="crt"><h3>Items with Issues</h3></div><div class="crr">${iss.length>0?`<span class="badge b-orange">${iss.length}</span>`:'<span class="badge b-green">None</span>'}</div></div>
+    <div class="card-row"><div class="crt"><h3>Flags</h3></div><div class="crr">${c.flags&&c.flags.length>0?`<span class="badge b-red">${c.flags.length}</span>`:'<span class="badge b-green">None</span>'}</div></div>
+    <div class="card-row"><div class="crt"><h3>Vendor Visits</h3></div><div class="crr">${c.vendors&&c.vendors.length>0?`<span class="badge b-blue">${c.vendors.length}</span>`:'<span class="badge b-gray">None</span>'}</div></div>
+  </div>`;
+  if(iss.length>0){
+    h+=`<div class="sec-label">Items Needing Attention</div><div class="card">`;
+    iss.forEach(([iid,item])=>{const tmpl=[...CHECK_ITEMS.interior,...CHECK_ITEMS.exterior].find(t=>t.id===iid);h+=`<div class="card-row"><div class="crt"><h3>${item.status==='flag'?'🚩':'⚠️'} ${esc(tmpl?tmpl.label:iid)}</h3>${item.notes?`<p>${esc(item.notes)}</p>`:''}</div></div>`;});
+    h+=`</div>`;
+  }
+  if(c.flags&&c.flags.length>0){
+    h+=`<div class="sec-label">Flagged Issues</div><div class="card">`;
+    c.flags.forEach(f=>{const color=f.priority==='high'?'var(--red)':f.priority==='low'?'var(--yellow)':'var(--orange)';h+=`<div class="card-row"><div style="width:4px;min-height:36px;background:${color};border-radius:2px;margin-right:12px;flex-shrink:0;align-self:stretch"></div><div class="crt"><h3>${esc(f.description)}</h3><p>${f.priority||'medium'} priority</p></div></div>`;});
+    h+=`</div>`;
+  }
+  if(c.vendors&&c.vendors.length>0){
+    h+=`<div class="sec-label">Vendor Visits</div><div class="card">`;
+    c.vendors.forEach(v=>{h+=`<div class="card-row"><div class="crt"><h3>${esc(vendorName(v.vendorId)||'Unknown vendor')}</h3>${v.service?`<p>${esc(v.service)}${v.notes?' · '+esc(v.notes):''}</p>`:''}</div></div>`;});
+    h+=`</div>`;
+  }
+  // Photos section
+  h+=`<div class="sec-label">Photos</div>
+  <div class="photo-grid" id="rec-photos-${id}">
+    <div class="photo-add" onclick="pickRecordPhoto('check','${id}')"><span>📷</span><span>Add Photo</span></div>
+  </div>`;
+  h+=`<div style="padding:0 16px 20px;margin-top:8px"><button class="btn btn-red btn-block" onclick="deleteCheck('${c.id}')">Delete Check Record</button></div>`;
+  openSheet(h);
+  setTimeout(()=>loadPhotosIntoGrid('rec-photos-'+id,c.photos||[],false),100);
+}
+
+function deleteCheck(id){if(!confirm('Delete this check record?'))return;db.checks=db.checks.filter(x=>x.id!==id);save();closeSheet();nav(curTab);}
+
+
+/* ═══════════════════════════════════════════════
+   MAINTENANCE
+═══════════════════════════════════════════════ */
+function renderMaint(){
+  const filtered=db.maintenance.filter(m=>{
+    if(maintFilter==='overdue')return maintStatus(m)==='overdue';
+    if(maintFilter==='soon')return maintStatus(m)==='due_soon';
+    return true;
+  }).sort((a,b)=>{const ord={overdue:0,due_soon:1,unscheduled:2,ok:3};return(ord[maintStatus(a)]||0)-(ord[maintStatus(b)]||0);});
+  let h=`<div class="pg-header"><h1>Maintenance</h1><p>Recurring schedules</p></div>
+  <div class="filter-pills">
+    ${[['all','All'],['overdue','Overdue'],['soon','Due Soon']].map(([v,l])=>`<button class="pill${maintFilter===v?' active':''}" onclick="maintFilter='${v}';nav(curTab)">${l}</button>`).join('')}
+  </div>`;
+  if(filtered.length===0){
+    h+=`<div class="empty"><div class="empty-ico">🔧</div><h3>${db.maintenance.length===0?'No Schedules Yet':'Nothing Here'}</h3><p>${db.maintenance.length===0?'Add recurring maintenance tasks for each property.':'No items match this filter.'}</p></div>`;
+  }else{
+    h+=`<div style="height:8px"></div>`;
+    filtered.forEach(m=>{
+      const cat=CATS[m.category]||CATS.general,ms=maintStatus(m),d=m.nextDue?daysFrom(m.nextDue):null;
+      const dueStr=d===null?'Not scheduled':d<0?`${Math.abs(d)}d overdue`:d===0?'Due today':`In ${d}d`;
+      const bc=ms==='overdue'?'b-red':ms==='due_soon'?'b-orange':'b-green';
+      h+=`<div class="card" onclick="viewMaint('${m.id}')">
+        <div style="padding:14px 16px;display:flex;align-items:center;gap:12px">
+          <div style="width:46px;height:46px;border-radius:13px;background:${cat.color}22;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">${cat.emoji}</div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:16px;font-weight:500">${esc(m.name)}</div>
+            <div style="font-size:13px;color:var(--text3)">${esc(propName(m.propertyId))}</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:7px">
+              <span class="badge ${bc}">${esc(dueStr)}</span>
+              <span class="badge b-gray">${freqLabel(m.frequency)}</span>
+              ${m.vendorId?`<span class="badge b-purple">👷 ${esc(vendorName(m.vendorId))}</span>`:''}
+            </div>
+          </div>${icoChevron()}
+        </div>
+      </div>`;
+    });
+  }
+  h+=`<button class="fab" onclick="maintSheet()">${icoPlus()}</button>`;
+  return h;
+}
+
+function viewMaint(id){
+  const m=db.maintenance.find(x=>x.id===id);if(!m)return;
+  const cat=CATS[m.category]||CATS.general,ms=maintStatus(m),d=m.nextDue?daysFrom(m.nextDue):null;
+  const dStr=d===null?'—':d<0?`${Math.abs(d)}d overdue`:d===0?'Today':`In ${d}d`;
+  const dc=ms==='overdue'?'var(--red)':ms==='due_soon'?'var(--orange)':'var(--green)';
+  let h=`<div class="sh-head"><div class="sh-title">${cat.emoji} ${esc(m.name)}</div><button class="sh-close" onclick="closeSheet()">✕</button></div>
+  <div class="card">
+    <div class="card-row"><div class="crt"><h3>Property</h3></div><div class="crr">${esc(propName(m.propertyId))}</div></div>
+    <div class="card-row"><div class="crt"><h3>Category</h3></div><div class="crr">${cat.label}</div></div>
+    <div class="card-row"><div class="crt"><h3>Frequency</h3></div><div class="crr">${freqLabel(m.frequency)}</div></div>
+    <div class="card-row"><div class="crt"><h3>Last Done</h3></div><div class="crr">${fmtDate(m.lastDone)}</div></div>
+    <div class="card-row"><div class="crt"><h3>Next Due</h3></div><div class="crr" style="color:${dc}">${fmtDate(m.nextDue)} <span style="font-size:12px">(${esc(dStr)})</span></div></div>
+    ${m.vendorId?`<div class="card-row"><div class="crt"><h3>Vendor</h3></div><div class="crr">${esc(vendorName(m.vendorId))}</div></div>`:''}
+    ${m.notes?`<div class="card-section" style="font-size:14px;color:var(--text3)">${esc(m.notes)}</div>`:''}
+  </div>
+  <div style="padding:0 16px;display:flex;gap:10px;margin-bottom:10px">
+    <button class="btn btn-green" style="flex:2" onclick="markDone('${id}')">✅ Mark Complete</button>
+    <button class="btn btn-secondary" style="flex:1" onclick="closeSheet();setTimeout(()=>maintSheet('${id}'),350)">✏️ Edit</button>
+  </div>
+  <div class="sec-label">Photos</div>
+  <div class="photo-grid" id="maint-photos-${id}">
+    <div class="photo-add" onclick="pickRecordPhoto('maint','${id}')"><span>📷</span><span>Add Photo</span></div>
+  </div>
+  <div style="padding:8px 16px 20px"><button class="btn btn-red btn-block" onclick="deleteMaint('${id}')">Delete Schedule</button></div>`;
+  openSheet(h);
+  setTimeout(()=>loadPhotosIntoGrid('maint-photos-'+id,m.photos||[],false),100);
+}
+
+function markDone(id){
+  const m=db.maintenance.find(x=>x.id===id);if(!m)return;
+  m.lastDone=today();m.nextDue=addMonths(today(),freqMonths(m.frequency));
+  save();closeSheet();nav(curTab);
+  setTimeout(()=>toast(`✅ Done! Next due: ${fmtDate(m.nextDue)}`),300);
+}
+
+function maintSheet(editId){
+  const m=editId?db.maintenance.find(x=>x.id===editId):null;
+  let h=`<div class="sh-head"><div class="sh-title">${m?'Edit':'Add'} Maintenance</div><button class="sh-close" onclick="closeSheet()">✕</button></div>
+  <div class="fg"><label>Name *</label><input class="fi" id="mf-name" placeholder="e.g. HVAC Filter Change" value="${m?esc(m.name):''}"/></div>
+  <div class="fg"><label>Property *</label><select class="fi fsel" id="mf-prop"><option value="">Select property...</option>${db.properties.map(p=>`<option value="${p.id}"${m&&m.propertyId===p.id?' selected':''}>${esc(p.name)}</option>`).join('')}</select></div>
+  <div class="fg"><label>Category</label><select class="fi fsel" id="mf-cat">${Object.entries(CATS).map(([k,v])=>`<option value="${k}"${m&&m.category===k?' selected':''}>${v.emoji} ${v.label}</option>`).join('')}</select></div>
+  <div class="fg"><label>Frequency</label><select class="fi fsel" id="mf-freq"><option value="monthly"${m&&m.frequency==='monthly'?' selected':''}>Monthly</option><option value="quarterly"${!m||m.frequency==='quarterly'?' selected':''}>Quarterly</option><option value="biannual"${m&&m.frequency==='biannual'?' selected':''}>Biannual</option><option value="annual"${m&&m.frequency==='annual'?' selected':''}>Annual</option></select></div>
+  <div class="fg"><label>Last Completed</label><input class="fi" type="date" id="mf-last" value="${m&&m.lastDone?m.lastDone:''}"/></div>
+  <div class="fg"><label>Assigned Vendor</label><select class="fi fsel" id="mf-vendor"><option value="">No vendor assigned</option>${db.vendors.map(v=>`<option value="${v.id}"${m&&m.vendorId===v.id?' selected':''}>${esc(v.name)}</option>`).join('')}</select></div>
+  <div class="fg"><label>Notes</label><textarea class="fi fta" id="mf-notes" placeholder="Filter specs, special instructions...">${m?esc(m.notes||''):''}</textarea></div>
+  <div style="padding:6px 16px 8px"><button class="btn btn-primary btn-block" onclick="saveMaint('${editId||''}')">${m?'Save Changes':'Add Schedule'}</button></div>
+  ${m?`<div style="padding:0 16px 8px"><button class="btn btn-red btn-block" onclick="deleteMaint('${editId}')">Delete Schedule</button></div>`:''}`;
+  openSheet(h);
+}
+
+function saveMaint(editId){
+  const name=document.getElementById('mf-name').value.trim(),pid=document.getElementById('mf-prop').value;
+  if(!name||!pid){alert('Name and property are required.');return;}
+  const freq=document.getElementById('mf-freq').value,lastDone=document.getElementById('mf-last').value;
+  const m={id:editId||uid(),name,propertyId:pid,category:document.getElementById('mf-cat').value,frequency:freq,lastDone:lastDone||null,nextDue:lastDone?addMonths(lastDone,freqMonths(freq)):null,vendorId:document.getElementById('mf-vendor').value||null,notes:document.getElementById('mf-notes').value.trim(),photos:(editId&&db.maintenance.find(x=>x.id===editId)?.photos)||[]};
+  if(editId){const i=db.maintenance.findIndex(x=>x.id===editId);if(i>=0)db.maintenance[i]=m;}else db.maintenance.push(m);
+  save();closeSheet();nav(curTab);
+}
+
+function deleteMaint(id){if(!confirm('Delete this maintenance schedule?'))return;db.maintenance=db.maintenance.filter(x=>x.id!==id);save();closeSheet();nav(curTab);}
+
+/* ═══════════════════════════════════════════════
+   INVOICES
+═══════════════════════════════════════════════ */
+function renderInvoices(){
+  const invs=db.invoices||[];
+  const filtered=invs.filter(i=>{
+    const s=calcInvoiceStatus(i);
+    if(invoiceFilter==='unpaid')return s==='unpaid';
+    if(invoiceFilter==='overdue')return s==='overdue';
+    if(invoiceFilter==='paid')return s==='paid';
+    return true;
+  }).sort((a,b)=>{
+    const ord={overdue:0,unpaid:1,paid:2};
+    return(ord[calcInvoiceStatus(a)]||0)-(ord[calcInvoiceStatus(b)]||0)||(b.dueDate||'').localeCompare(a.dueDate||'');
+  });
+  const totalOwed=invs.filter(i=>calcInvoiceStatus(i)!=='paid').reduce((s,i)=>s+Number(i.amount||0),0);
+  const totalOverdue=invs.filter(i=>calcInvoiceStatus(i)==='overdue').reduce((s,i)=>s+Number(i.amount||0),0);
+  const totalPaid=invs.filter(i=>calcInvoiceStatus(i)==='paid').reduce((s,i)=>s+Number(i.amount||0),0);
+  let h=`<div class="pg-header"><h1>Invoices</h1><p>${invs.length} invoice${invs.length!==1?'s':''}</p></div>
+  <div class="inv-stat-row">
+    <div class="inv-stat"><div class="inv-stat-amt" style="color:${totalOwed>0?'var(--red)':'var(--green)'}">${totalOwed>0?'$'+totalOwed.toLocaleString():'$0'}</div><div class="inv-stat-lbl">Total Owed</div></div>
+    <div class="inv-stat"><div class="inv-stat-amt" style="color:${totalOverdue>0?'var(--red)':'var(--text3)'}">${totalOverdue>0?'$'+totalOverdue.toLocaleString():'—'}</div><div class="inv-stat-lbl">Overdue</div></div>
+    <div class="inv-stat"><div class="inv-stat-amt" style="color:var(--green)">$${totalPaid.toLocaleString()}</div><div class="inv-stat-lbl">Paid</div></div>
+  </div>
+  <div class="filter-pills">
+    ${[['all','All'],['overdue','Overdue'],['unpaid','Unpaid'],['paid','Paid']].map(([v,l])=>`<button class="pill${invoiceFilter===v?' active':''}" onclick="invoiceFilter='${v}';nav(curTab)">${l}</button>`).join('')}
+  </div>`;
+  if(filtered.length===0){
+    h+=`<div class="empty"><div class="empty-ico">💸</div><h3>${invs.length===0?'No Invoices Yet':'Nothing Here'}</h3><p>${invs.length===0?'Add invoices manually or import from your Gmail backup.':'No invoices match this filter.'}</p></div>`;
+  }else{
+    h+=`<div style="height:8px"></div>`;
+    filtered.forEach(inv=>{
+      const s=calcInvoiceStatus(inv);
+      const bc=s==='paid'?'b-green':s==='overdue'?'b-red':'b-orange';
+      const bl=s==='paid'?'Paid':s==='overdue'?'Overdue':'Unpaid';
+      const dStr=inv.dueDate?(s==='paid'?'Paid':s==='overdue'?`${Math.abs(daysFrom(inv.dueDate))}d overdue`:`Due ${fmtShort(inv.dueDate)}`):'No due date';
+      h+=`<div class="card" onclick="viewInvoice('${inv.id}')">
+        <div style="padding:14px 16px">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px">
+            <div style="flex:1;min-width:0">
+              <div style="font-size:16px;font-weight:500">${esc(inv.vendor||'Unknown Vendor')}</div>
+              <div style="font-size:13px;color:var(--text3);margin-top:2px">${inv.invoiceNum?'#'+esc(inv.invoiceNum)+' · ':''}${esc(dStr)}</div>
+              ${inv.property?`<div style="font-size:12px;color:var(--text3);margin-top:2px">📍 ${esc(inv.property)}</div>`:''}
+            </div>
+            <div style="text-align:right;flex-shrink:0">
+              <div style="font-size:18px;font-weight:700;color:${s==='paid'?'var(--green)':s==='overdue'?'var(--red)':'var(--text)'}">$${Number(inv.amount||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
+              <span class="badge ${bc}" style="margin-top:4px">${bl}</span>
+            </div>
+          </div>
+          ${inv.notes?`<div style="font-size:12px;color:var(--text3);margin-top:8px;border-top:0.5px solid var(--sep);padding-top:8px">${esc(inv.notes)}</div>`:''}
+        </div>
+      </div>`;
+    });
+  }
+  h+=`<button class="fab" onclick="invoiceSheet()">${icoPlus()}</button>`;
+  return h;
+}
+
+function viewInvoice(id){
+  const inv=db.invoices.find(x=>x.id===id);if(!inv)return;
+  const s=calcInvoiceStatus(inv);
+  const bc=s==='paid'?'b-green':s==='overdue'?'b-red':'b-orange';
+  let h=`<div class="sh-head"><div class="sh-title">Invoice ${inv.invoiceNum?'#'+esc(inv.invoiceNum):''}</div><button class="sh-close" onclick="closeSheet()">✕</button></div>
+  <div class="card">
+    <div class="card-row"><div class="crt"><h3>Vendor</h3></div><div class="crr" style="font-weight:500">${esc(inv.vendor||'—')}</div></div>
+    <div class="card-row"><div class="crt"><h3>Amount</h3></div><div class="crr" style="font-size:18px;font-weight:700">$${Number(inv.amount||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</div></div>
+    <div class="card-row"><div class="crt"><h3>Status</h3></div><div class="crr"><span class="badge ${bc}">${s.charAt(0).toUpperCase()+s.slice(1)}</span></div></div>
+    <div class="card-row"><div class="crt"><h3>Due Date</h3></div><div class="crr">${fmtDate(inv.dueDate)}</div></div>
+    ${inv.property?`<div class="card-row"><div class="crt"><h3>Property</h3></div><div class="crr">${esc(inv.property)}</div></div>`:''}
+    ${inv.created?`<div class="card-row"><div class="crt"><h3>Created</h3></div><div class="crr">${fmtDate(inv.created)}</div></div>`:''}
+    ${inv.notes?`<div class="card-section" style="font-size:14px;color:var(--text3)">${esc(inv.notes)}</div>`:''}
+  </div>
+  <div style="padding:0 16px;display:flex;gap:10px;margin-bottom:10px">
+    ${s!=='paid'?`<button class="btn btn-green" style="flex:2" onclick="markInvoicePaid('${id}')">✅ Mark as Paid</button>`:`<button class="btn btn-secondary" style="flex:2" onclick="markInvoiceUnpaid('${id}')">↩️ Mark Unpaid</button>`}
+    <button class="btn btn-secondary" style="flex:1" onclick="closeSheet();setTimeout(()=>invoiceSheet('${id}'),350)">✏️ Edit</button>
+  </div>
+  <div style="padding:0 16px 20px"><button class="btn btn-red btn-block" onclick="deleteInvoice('${id}')">Delete Invoice</button></div>`;
+  openSheet(h);
+}
+
+function markInvoicePaid(id){const inv=db.invoices.find(x=>x.id===id);if(!inv)return;inv.status='paid';save();closeSheet();nav(curTab);setTimeout(()=>toast('✅ Invoice marked as paid!'),300);}
+function markInvoiceUnpaid(id){const inv=db.invoices.find(x=>x.id===id);if(!inv)return;inv.status='unpaid';save();closeSheet();nav(curTab);}
+
+function invoiceSheet(editId){
+  const inv=editId?db.invoices.find(x=>x.id===editId):null;
+  let h=`<div class="sh-head"><div class="sh-title">${inv?'Edit':'Add'} Invoice</div><button class="sh-close" onclick="closeSheet()">✕</button></div>
+  <div class="fg"><label>Vendor / Company *</label><input class="fi" id="if-vendor" placeholder="e.g. Ehukai Maintenance" value="${inv?esc(inv.vendor||''):''}"/></div>
+  <div class="frow">
+    <div class="fg"><label>Invoice #</label><input class="fi" id="if-num" placeholder="1234" value="${inv?esc(inv.invoiceNum||''):''}"/></div>
+    <div class="fg"><label>Amount *</label><input class="fi" id="if-amt" type="number" step="0.01" placeholder="0.00" value="${inv?inv.amount:''}"/></div>
+  </div>
+  <div class="fg"><label>Due Date</label><input class="fi" type="date" id="if-due" value="${inv?inv.dueDate||'':''}"/></div>
+  <div class="fg"><label>Property</label><input class="fi" id="if-prop" placeholder="Property name (optional)" value="${inv?esc(inv.property||''):''}"/></div>
+  <div class="fg"><label>Status</label><select class="fi fsel" id="if-status"><option value="unpaid"${!inv||inv.status==='unpaid'?' selected':''}>Unpaid</option><option value="paid"${inv&&inv.status==='paid'?' selected':''}>Paid</option><option value="overdue"${inv&&inv.status==='overdue'?' selected':''}>Overdue</option></select></div>
+  <div class="fg"><label>Notes</label><textarea class="fi fta" id="if-notes" placeholder="Additional details...">${inv?esc(inv.notes||''):''}</textarea></div>
+  <div style="padding:6px 16px 8px"><button class="btn btn-primary btn-block" onclick="saveInvoice('${editId||''}')">${inv?'Save Changes':'Add Invoice'}</button></div>
+  ${inv?`<div style="padding:0 16px 8px"><button class="btn btn-red btn-block" onclick="deleteInvoice('${editId}')">Delete Invoice</button></div>`:''}`;
+  openSheet(h);
+}
+
+function saveInvoice(editId){
+  const vendor=document.getElementById('if-vendor').value.trim(),amt=document.getElementById('if-amt').value;
+  if(!vendor||!amt){alert('Vendor and amount are required.');return;}
+  const inv={id:editId||uid(),vendor,invoiceNum:document.getElementById('if-num').value.trim(),amount:parseFloat(amt)||0,dueDate:document.getElementById('if-due').value||null,property:document.getElementById('if-prop').value.trim(),status:document.getElementById('if-status').value,notes:document.getElementById('if-notes').value.trim(),created:editId?(db.invoices.find(x=>x.id===editId)?.created||today()):today()};
+  if(!db.invoices)db.invoices=[];
+  if(editId){const i=db.invoices.findIndex(x=>x.id===editId);if(i>=0)db.invoices[i]=inv;}else db.invoices.push(inv);
+  save();closeSheet();nav(curTab);
+}
+
+function deleteInvoice(id){if(!confirm('Delete this invoice?'))return;db.invoices=(db.invoices||[]).filter(x=>x.id!==id);save();closeSheet();nav(curTab);}
+
+/* ═══════════════════════════════════════════════
+   CALENDAR
+═══════════════════════════════════════════════ */
+function getCalEvents(y,m){
+  const evts={};
+  function add(dateStr,ev){if(!evts[dateStr])evts[dateStr]=[];evts[dateStr].push(ev);}
+  const ms=`${y}-${String(m+1).padStart(2,'0')}`;
+  // Invoices
+  (db.invoices||[]).filter(i=>i.dueDate&&i.dueDate.startsWith(ms)&&calcInvoiceStatus(i)!=='paid').forEach(inv=>{add(inv.dueDate,{color:'var(--orange)',icon:'💸',title:`Invoice: ${inv.vendor}`,sub:`$${Number(inv.amount||0).toLocaleString()}`,date:inv.dueDate,type:'invoice'});});
+  // Maintenance
+  db.maintenance.filter(mt=>mt.nextDue&&mt.nextDue.startsWith(ms)).forEach(mt=>{const cat=CATS[mt.category]||CATS.general;add(mt.nextDue,{color:cat.color,icon:cat.emoji,title:mt.name,sub:propName(mt.propertyId),date:mt.nextDue,type:'maint'});});
+  // Check due dates
+  db.properties.forEach(p=>{const lc=lastCheck(p.id);if(lc){const dd=addDays(lc.date,7);if(dd.startsWith(ms))add(dd,{color:'var(--green)',icon:'✅',title:`Check: ${p.name}`,sub:'Weekly inspection',date:dd,type:'check'});}});
+  // Project deadlines
+  (db.projects||[]).filter(pj=>pj.endDate&&pj.endDate.startsWith(ms)).forEach(pj=>{add(pj.endDate,{color:'var(--purple)',icon:'🚧',title:pj.name,sub:propName(pj.propertyId),date:pj.endDate,type:'project'});});
+  return evts;
+}
+
+function getUpcomingEvents(days){
+  const events=[];
+  const td=today(),end=addDays(td,days);
+  function add(dateStr,ev){if(dateStr>=td&&dateStr<=end)events.push({...ev,date:dateStr});}
+  (db.invoices||[]).filter(i=>i.dueDate&&calcInvoiceStatus(i)!=='paid').forEach(inv=>{add(inv.dueDate,{color:'var(--orange)',icon:'💸',title:`Invoice: ${inv.vendor}`,sub:`$${Number(inv.amount||0).toLocaleString()}`});});
+  db.maintenance.filter(mt=>mt.nextDue).forEach(mt=>{const cat=CATS[mt.category]||CATS.general;add(mt.nextDue,{color:cat.color,icon:cat.emoji,title:mt.name,sub:propName(mt.propertyId)});});
+  db.properties.forEach(p=>{const lc=lastCheck(p.id);if(lc){const dd=addDays(lc.date,7);add(dd,{color:'var(--green)',icon:'✅',title:`Check: ${p.name}`,sub:'Weekly inspection'});}});
+  (db.projects||[]).filter(pj=>pj.endDate).forEach(pj=>{add(pj.endDate,{color:'var(--purple)',icon:'🚧',title:pj.name,sub:propName(pj.propertyId)});});
+  return events.sort((a,b)=>a.date.localeCompare(b.date));
+}
+
+function renderCalendar(){
+  const y=calYear,m=calMonth;
+  const monthName=new Date(y,m,1).toLocaleDateString('en-US',{month:'long',year:'numeric'});
+  const evts=getCalEvents(y,m);
+  const td=today();
+  let h=`<div class="pg-header"><h1>Calendar</h1><p>Schedule overview</p></div>
+  <div class="cal-nav">
+    <button class="cal-nav-btn" onclick="calMonth--;if(calMonth<0){calMonth=11;calYear--;}nav('cal')">‹</button>
+    <div class="cal-month-lbl">${monthName}</div>
+    <button class="cal-nav-btn" onclick="calMonth++;if(calMonth>11){calMonth=0;calYear++;}nav('cal')">›</button>
+  </div>
+  <div class="cal-dow-row">
+    ${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(d=>`<div class="cal-dow">${d}</div>`).join('')}
+  </div>
+  <div class="cal-grid">`;
+  const firstDay=new Date(y,m,1).getDay();
+  const daysInMonth=new Date(y,m+1,0).getDate();
+  const daysInPrev=new Date(y,m,0).getDate();
+  for(let i=firstDay-1;i>=0;i--){h+=`<div class="cal-cell other-month"><div class="cal-num">${daysInPrev-i}</div></div>`;}
+  for(let d=1;d<=daysInMonth;d++){
+    const ds=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isToday=ds===td;
+    const dayEvts=evts[ds]||[];
+    const dots=[...new Set(dayEvts.map(e=>e.color))].slice(0,4);
+    h+=`<div class="cal-cell${isToday?' today':''}" onclick="showCalDay('${ds}')">
+      <div class="cal-num">${d}</div>
+      ${dots.length?`<div class="cal-dots">${dots.map(c=>`<div class="cal-dot" style="background:${c}"></div>`).join('')}</div>`:''}
+    </div>`;
+  }
+  const totalCells=firstDay+daysInMonth;
+  const rem=totalCells%7===0?0:7-(totalCells%7);
+  for(let d=1;d<=rem;d++){h+=`<div class="cal-cell other-month"><div class="cal-num">${d}</div></div>`;}
+  h+=`</div>`;
+  // Legend
+  h+=`<div style="display:flex;gap:16px;flex-wrap:wrap;padding:12px 20px 4px">
+    <span style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text3)"><span style="width:8px;height:8px;border-radius:50%;background:var(--orange);display:inline-block"></span>Invoice</span>
+    <span style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text3)"><span style="width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block"></span>Check</span>
+    <span style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text3)"><span style="width:8px;height:8px;border-radius:50%;background:var(--blue);display:inline-block"></span>Maintenance</span>
+    <span style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text3)"><span style="width:8px;height:8px;border-radius:50%;background:var(--purple);display:inline-block"></span>Project</span>
+  </div>`;
+  const upcoming=getUpcomingEvents(30);
+  if(upcoming.length>0){
+    h+=`<div class="sec-label">Next 30 Days</div><div class="card">`;
+    upcoming.slice(0,15).forEach(ev=>{
+      h+=`<div class="card-row">
+        <div class="cri" style="background:${ev.color}22"><span style="font-size:17px">${ev.icon}</span></div>
+        <div class="crt"><h3>${esc(ev.title)}</h3><p>${esc(ev.sub)}</p></div>
+        <div class="crr" style="font-size:12px;color:var(--text3)">${fmtShort(ev.date)}</div>
+      </div>`;
+    });
+    h+=`</div>`;
+  }else{h+=`<div class="empty"><div class="empty-ico">📅</div><h3>Clear Schedule</h3><p>No upcoming events in the next 30 days.</p></div>`;}
+  return h;
+}
+
+function showCalDay(dateStr){
+  const y=parseInt(dateStr.split('-')[0]),m=parseInt(dateStr.split('-')[1])-1;
+  const evts=getCalEvents(y,m);
+  const dayEvts=evts[dateStr]||[];
+  if(!dayEvts.length){toast('No events on '+fmtShort(dateStr));return;}
+  let h=`<div class="sh-head"><div class="sh-title">📅 ${fmtDate(dateStr)}</div><button class="sh-close" onclick="closeSheet()">✕</button></div>
+  <div class="card">`;
+  dayEvts.forEach(ev=>{h+=`<div class="card-row"><div class="cri" style="background:${ev.color}22"><span style="font-size:17px">${ev.icon}</span></div><div class="crt"><h3>${esc(ev.title)}</h3><p>${esc(ev.sub)}</p></div></div>`;});
+  h+=`</div><div style="height:16px"></div>`;
+  openSheet(h);
+}
+
+
+/* ═══════════════════════════════════════════════
+   PROJECTS
+═══════════════════════════════════════════════ */
+function renderProjects(){
+  const projs=(db.projects||[]);
+  const filtered=projs.filter(p=>{
+    if(projFilter==='active')return p.status==='active';
+    if(projFilter==='planning')return p.status==='planning';
+    if(projFilter==='completed')return p.status==='completed';
+    return true;
+  });
+  let h=`<div class="pg-header"><h1>Projects</h1><p>${projs.length} project${projs.length!==1?'s':''}</p></div>
+  <div class="filter-pills">
+    ${[['all','All'],['active','Active'],['planning','Planning'],['completed','Completed']].map(([v,l])=>`<button class="pill${projFilter===v?' active':''}" onclick="projFilter='${v}';nav(curTab)">${l}</button>`).join('')}
+  </div>`;
+  if(filtered.length===0){
+    h+=`<div class="empty"><div class="empty-ico">🚧</div><h3>${projs.length===0?'No Projects Yet':'Nothing Here'}</h3><p>${projs.length===0?'Track renovation work, big jobs, and task lists per property.':'No projects match this filter.'}</p></div>`;
+  }else{
+    h+=`<div style="height:8px"></div>`;
+    filtered.forEach(p=>{
+      const tasks=p.tasks||[];
+      const done=tasks.filter(t=>t.done).length;
+      const pct=tasks.length?Math.round((done/tasks.length)*100):0;
+      const color=projStatusColor(p.status);
+      h+=`<div class="card" onclick="viewProject('${p.id}')">
+        <div style="padding:14px 16px">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start">
+            <div style="flex:1;min-width:0">
+              <div style="font-size:17px;font-weight:600">${esc(p.name)}</div>
+              <div style="font-size:13px;color:var(--text3);margin-top:2px">${esc(propName(p.propertyId))}</div>
+            </div>
+            <span class="badge" style="background:${color}22;color:${color};margin-left:8px">${projStatusLabel(p.status)}</span>
+          </div>
+          ${p.budget?`<div style="font-size:12px;color:var(--text3);margin-top:6px">Budget: $${Number(p.budget).toLocaleString()}${p.spent?` · Spent: $${Number(p.spent).toLocaleString()}`:''}
+          </div>`:''}
+          ${tasks.length>0?`<div style="margin-top:10px">
+            <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text3);margin-bottom:4px"><span>${done}/${tasks.length} tasks</span><span>${pct}%</span></div>
+            <div style="height:4px;background:#E5E5EA;border-radius:2px"><div style="height:100%;width:${pct}%;background:${color};border-radius:2px;transition:width 0.3s"></div></div>
+          </div>`:''}
+          ${p.endDate?`<div style="font-size:12px;color:var(--text3);margin-top:6px">🗓 Target: ${fmtDate(p.endDate)}</div>`:''}
+        </div>
+      </div>`;
+    });
+  }
+  h+=`<button class="fab" onclick="projectSheet()">${icoPlus()}</button>`;
+  return h;
+}
+
+function viewProject(id){
+  const p=(db.projects||[]).find(x=>x.id===id);if(!p)return;
+  const tasks=p.tasks||[];
+  const done=tasks.filter(t=>t.done).length;
+  const pct=tasks.length?Math.round((done/tasks.length)*100):0;
+  const color=projStatusColor(p.status);
+  let h=`<div class="sh-head"><div class="sh-title">🚧 ${esc(p.name)}</div><button class="sh-close" onclick="closeSheet()">✕</button></div>
+  <div class="card">
+    <div class="card-row"><div class="crt"><h3>Property</h3></div><div class="crr">${esc(propName(p.propertyId))}</div></div>
+    <div class="card-row"><div class="crt"><h3>Status</h3></div><div class="crr"><span class="badge" style="background:${color}22;color:${color}">${projStatusLabel(p.status)}</span></div></div>
+    ${p.startDate?`<div class="card-row"><div class="crt"><h3>Start</h3></div><div class="crr">${fmtDate(p.startDate)}</div></div>`:''}
+    ${p.endDate?`<div class="card-row"><div class="crt"><h3>Target End</h3></div><div class="crr">${fmtDate(p.endDate)}</div></div>`:''}
+    ${p.budget?`<div class="card-row"><div class="crt"><h3>Budget</h3></div><div class="crr">$${Number(p.budget).toLocaleString()}</div></div>`:''}
+    ${p.spent?`<div class="card-row"><div class="crt"><h3>Spent</h3></div><div class="crr" style="color:${Number(p.spent)>Number(p.budget)?'var(--red)':'var(--text)'}">$${Number(p.spent).toLocaleString()}</div></div>`:''}
+    ${p.description?`<div class="card-section" style="font-size:14px;color:var(--text3)">${esc(p.description)}</div>`:''}
+  </div>
+  <div style="padding:0 16px 10px;display:flex;gap:10px">
+    <button class="btn btn-secondary" style="flex:1" onclick="closeSheet();setTimeout(()=>projectSheet('${id}'),350)">✏️ Edit</button>
+    <button class="btn btn-red" onclick="deleteProject('${id}')">🗑</button>
+  </div>`;
+  // Tasks
+  h+=`<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 20px 2px">
+    <div class="sec-label" style="padding:0">Tasks ${tasks.length>0?`(${done}/${tasks.length})`:''}
+    </div>
+    <button onclick="addProjectTask('${id}')" style="font-size:13px;color:var(--blue);font-weight:600;padding:4px 0">+ Add Task</button>
+  </div>
+  ${tasks.length>0?`<div style="margin:0 16px 12px;background:var(--card);border-radius:12px;overflow:hidden">
+    ${tasks.map((t,ti)=>`<div class="task-item">
+      <div class="task-check${t.done?' done':''}" onclick="toggleTask('${id}',${ti})">${t.done?'✓':''}</div>
+      <div class="task-text${t.done?' done':''}">${esc(t.description)}</div>
+      <button onclick="removeTask('${id}',${ti})" style="font-size:18px;color:var(--text3);padding:2px 4px">×</button>
+    </div>`).join('')}
+  </div>`:`<div style="padding:8px 20px 12px;font-size:14px;color:var(--text3)">No tasks yet — tap + to add one.</div>`}`;
+  // Photos
+  h+=`<div class="sec-label">Photos</div>
+  <div class="photo-grid" id="proj-photos-${id}">
+    <div class="photo-add" onclick="pickRecordPhoto('project','${id}')"><span>📷</span><span>Add Photo</span></div>
+  </div>
+  <div style="height:16px"></div>`;
+  openSheet(h);
+  setTimeout(()=>loadPhotosIntoGrid('proj-photos-'+id,p.photos||[],false),100);
+}
+
+function addProjectTask(pid){
+  const desc=prompt('Task description:');
+  if(!desc||!desc.trim())return;
+  const p=(db.projects||[]).find(x=>x.id===pid);if(!p)return;
+  if(!p.tasks)p.tasks=[];
+  p.tasks.push({id:uid(),description:desc.trim(),done:false});
+  save();viewProject(pid);
+}
+
+function toggleTask(pid,ti){
+  const p=(db.projects||[]).find(x=>x.id===pid);if(!p||!p.tasks)return;
+  p.tasks[ti].done=!p.tasks[ti].done;save();viewProject(pid);
+}
+
+function removeTask(pid,ti){
+  const p=(db.projects||[]).find(x=>x.id===pid);if(!p||!p.tasks)return;
+  p.tasks.splice(ti,1);save();viewProject(pid);
+}
+
+function projectSheet(editId){
+  const p=editId?(db.projects||[]).find(x=>x.id===editId):null;
+  let h=`<div class="sh-head"><div class="sh-title">${p?'Edit':'New'} Project</div><button class="sh-close" onclick="closeSheet()">✕</button></div>
+  <div class="fg"><label>Project Name *</label><input class="fi" id="pjf-name" placeholder="e.g. Kitchen Renovation" value="${p?esc(p.name):''}"/></div>
+  <div class="fg"><label>Property *</label><select class="fi fsel" id="pjf-prop"><option value="">Select property...</option>${db.properties.map(pr=>`<option value="${pr.id}"${p&&p.propertyId===pr.id?' selected':''}>${esc(pr.name)}</option>`).join('')}</select></div>
+  <div class="fg"><label>Status</label><select class="fi fsel" id="pjf-status">
+    <option value="planning"${!p||p.status==='planning'?' selected':''}>Planning</option>
+    <option value="active"${p&&p.status==='active'?' selected':''}>Active</option>
+    <option value="on_hold"${p&&p.status==='on_hold'?' selected':''}>On Hold</option>
+    <option value="completed"${p&&p.status==='completed'?' selected':''}>Completed</option>
+  </select></div>
+  <div class="fg"><label>Description</label><textarea class="fi fta" id="pjf-desc" placeholder="Scope of work, goals...">${p?esc(p.description||''):''}</textarea></div>
+  <div class="frow">
+    <div class="fg"><label>Budget ($)</label><input class="fi" id="pjf-budget" type="number" placeholder="50000" value="${p?p.budget||'':''}"/></div>
+    <div class="fg"><label>Spent ($)</label><input class="fi" id="pjf-spent" type="number" placeholder="0" value="${p?p.spent||'':''}"/></div>
+  </div>
+  <div class="frow">
+    <div class="fg"><label>Start Date</label><input class="fi" type="date" id="pjf-start" value="${p?p.startDate||'':''}"/></div>
+    <div class="fg"><label>Target End</label><input class="fi" type="date" id="pjf-end" value="${p?p.endDate||'':''}"/></div>
+  </div>
+  <div style="padding:6px 16px 8px"><button class="btn btn-primary btn-block" onclick="saveProject('${editId||''}')">${p?'Save Changes':'Create Project'}</button></div>
+  ${p?`<div style="padding:0 16px 8px"><button class="btn btn-red btn-block" onclick="deleteProject('${editId}')">Delete Project</button></div>`:''}`;
+  openSheet(h);
+}
+
+function saveProject(editId){
+  const name=document.getElementById('pjf-name').value.trim(),pid=document.getElementById('pjf-prop').value;
+  if(!name||!pid){alert('Name and property are required.');return;}
+  const existing=editId?(db.projects||[]).find(x=>x.id===editId):null;
+  const p={id:editId||uid(),name,propertyId:pid,status:document.getElementById('pjf-status').value,description:document.getElementById('pjf-desc').value.trim(),budget:parseFloat(document.getElementById('pjf-budget').value)||null,spent:parseFloat(document.getElementById('pjf-spent').value)||null,startDate:document.getElementById('pjf-start').value||null,endDate:document.getElementById('pjf-end').value||null,tasks:existing?existing.tasks||[]:[],photos:existing?existing.photos||[]:[],createdAt:existing?existing.createdAt:today()};
+  if(!db.projects)db.projects=[];
+  if(editId){const i=db.projects.findIndex(x=>x.id===editId);if(i>=0)db.projects[i]=p;}else db.projects.push(p);
+  save();closeSheet();nav(curTab);
+}
+
+function deleteProject(id){if(!confirm('Delete this project?'))return;db.projects=(db.projects||[]).filter(x=>x.id!==id);save();closeSheet();nav(curTab);}
+
+/* ═══════════════════════════════════════════════
+   VENDORS
+═══════════════════════════════════════════════ */
+function renderVendors(){
+  const grp={};db.vendors.forEach(v=>{if(!grp[v.category])grp[v.category]=[];grp[v.category].push(v);});
+  let h=`<div class="pg-header"><h1>Vendors</h1><p>${db.vendors.length} contact${db.vendors.length!==1?'s':''}</p></div>`;
+  if(db.vendors.length===0){h+=`<div class="empty"><div class="empty-ico">👷</div><h3>No Vendors Yet</h3><p>Add your HVAC, pool, pest control, landscaping, and other service providers.</p></div>`;}
+  else{Object.entries(grp).forEach(([cat,vens])=>{const c=CATS[cat]||CATS.general;h+=`<div class="sec-label">${c.emoji} ${c.label}</div><div class="card">`;vens.forEach(v=>{h+=`<div class="card-row" onclick="viewVendor('${v.id}')"><div class="crt"><h3>${esc(v.name)}</h3>${v.phone?`<p>📞 ${esc(v.phone)}</p>`:v.specialty?`<p>${esc(v.specialty)}</p>`:'<p style="color:var(--text3)">No contact info</p>'}</div><div class="crr">${icoChevron()}</div></div>`;});h+=`</div>`;});}
+  h+=`<button class="fab" onclick="vendorSheet()">${icoPlus()}</button>`;
+  return h;
+}
+
+function viewVendor(id){
+  const v=db.vendors.find(x=>x.id===id);if(!v)return;
+  const cat=CATS[v.category]||CATS.general;
+  let h=`<div class="sh-head"><div class="sh-title">${cat.emoji} ${esc(v.name)}</div><button class="sh-close" onclick="closeSheet()">✕</button></div>
+  <div class="card">
+    <div class="card-row"><div class="crt"><h3>Category</h3></div><div class="crr">${cat.label}</div></div>
+    ${v.specialty?`<div class="card-row"><div class="crt"><h3>Specialty</h3></div><div class="crr">${esc(v.specialty)}</div></div>`:''}
+    ${v.phone?`<div class="card-row"><div class="crt"><h3>Phone</h3></div><div class="crr"><a href="tel:${esc(v.phone)}" style="color:var(--blue)">${esc(v.phone)}</a></div></div>`:''}
+    ${v.email?`<div class="card-row"><div class="crt"><h3>Email</h3></div><div class="crr" style="font-size:13px"><a href="mailto:${esc(v.email)}" style="color:var(--blue)">${esc(v.email)}</a></div></div>`:''}
+    ${v.license?`<div class="card-row"><div class="crt"><h3>License #</h3></div><div class="crr">${esc(v.license)}</div></div>`:''}
+    ${v.notes?`<div class="card-section" style="font-size:14px;color:var(--text3)">${esc(v.notes)}</div>`:''}
+  </div>`;
+  if(v.phone){h+=`<div style="padding:0 16px 10px"><a href="tel:${esc(v.phone)}" class="btn btn-green btn-block" style="display:flex">📞 Call ${esc(v.name)}</a></div>`;}
+  h+=`<div style="display:flex;gap:10px;padding:0 16px 20px"><button class="btn btn-secondary" style="flex:1" onclick="closeSheet();setTimeout(()=>vendorSheet('${id}'),350)">✏️ Edit</button><button class="btn btn-red" style="flex:1" onclick="deleteVendor('${id}')">🗑 Delete</button></div>`;
+  openSheet(h);
+}
+
+function vendorSheet(editId){
+  const v=editId?db.vendors.find(x=>x.id===editId):null;
+  let h=`<div class="sh-head"><div class="sh-title">${v?'Edit':'Add'} Vendor</div><button class="sh-close" onclick="closeSheet()">✕</button></div>
+  <div class="fg"><label>Name *</label><input class="fi" id="vf-name" placeholder="Company or person name" value="${v?esc(v.name):''}"/></div>
+  <div class="fg"><label>Category</label><select class="fi fsel" id="vf-cat">${Object.entries(CATS).map(([k,c])=>`<option value="${k}"${v&&v.category===k?' selected':''}>${c.emoji} ${c.label}</option>`).join('')}</select></div>
+  <div class="fg"><label>Specialty</label><input class="fi" id="vf-spec" placeholder="e.g. AC Repair, Pool Cleaning" value="${v?esc(v.specialty||''):''}"/></div>
+  <div class="fg"><label>Phone</label><input class="fi" type="tel" id="vf-phone" placeholder="(808) 555-0000" value="${v?esc(v.phone||''):''}"/></div>
+  <div class="fg"><label>Email</label><input class="fi" type="email" id="vf-email" placeholder="email@example.com" value="${v?esc(v.email||''):''}"/></div>
+  <div class="fg"><label>License # (optional)</label><input class="fi" id="vf-lic" placeholder="Contractor license number" value="${v?esc(v.license||''):''}"/></div>
+  <div class="fg"><label>Notes</label><textarea class="fi fta" id="vf-notes" placeholder="Rates, service area, preferred contact...">${v?esc(v.notes||''):''}</textarea></div>
+  <div style="padding:6px 16px 8px"><button class="btn btn-primary btn-block" onclick="saveVendor('${editId||''}')">${v?'Save Changes':'Add Vendor'}</button></div>
+  ${v?`<div style="padding:0 16px 8px"><button class="btn btn-red btn-block" onclick="deleteVendor('${editId}')">Delete Vendor</button></div>`:''}`;
+  openSheet(h);
+}
+
+function saveVendor(editId){
+  const name=document.getElementById('vf-name').value.trim();if(!name){alert('Vendor name is required.');return;}
+  const v={id:editId||uid(),name,category:document.getElementById('vf-cat').value,specialty:document.getElementById('vf-spec').value.trim(),phone:document.getElementById('vf-phone').value.trim(),email:document.getElementById('vf-email').value.trim(),license:document.getElementById('vf-lic').value.trim(),notes:document.getElementById('vf-notes').value.trim()};
+  if(editId){const i=db.vendors.findIndex(x=>x.id===editId);if(i>=0)db.vendors[i]=v;}else db.vendors.push(v);
+  save();closeSheet();nav(curTab);
+}
+
+function deleteVendor(id){if(!confirm('Delete this vendor?'))return;db.vendors=db.vendors.filter(x=>x.id!==id);save();closeSheet();nav(curTab);}
+
+/* ═══════════════════════════════════════════════
+   SOPs
+═══════════════════════════════════════════════ */
+let sopData=null;
+
+function renderSOPs(){
+  if(!db.sopRecords)db.sopRecords=[];
+  let h=`<div class="pg-header"><h1>SOPs</h1><p>Arrival & departure checklists</p></div>`;
+  if(db.properties.length===0){h+=`<div class="empty"><div class="empty-ico">📋</div><h3>No Properties Yet</h3><p>Add properties first.</p><button class="btn btn-primary mt8" onclick="nav('props')">Add Property</button></div>`;return h;}
+  h+=`<div class="sec-label">Start a Checklist</div>
+  <div style="display:flex;gap:12px;padding:0 16px;margin-bottom:16px">
+    <div style="flex:1;background:linear-gradient(140deg,#34C759,#00B248);border-radius:16px;padding:18px 14px;cursor:pointer" onclick="sopSelectProp('arrival')">
+      <div style="font-size:32px;margin-bottom:8px">🏖️</div>
+      <div style="color:white;font-size:17px;font-weight:700;line-height:1.2">Arrival<br>Prep</div>
+      <div style="color:rgba(255,255,255,0.8);font-size:12px;margin-top:5px">Owner coming home</div>
+    </div>
+    <div style="flex:1;background:linear-gradient(140deg,#007AFF,#5856D6);border-radius:16px;padding:18px 14px;cursor:pointer" onclick="sopSelectProp('departure')">
+      <div style="font-size:32px;margin-bottom:8px">✈️</div>
+      <div style="color:white;font-size:17px;font-weight:700;line-height:1.2">Departure<br>Checklist</div>
+      <div style="color:rgba(255,255,255,0.8);font-size:12px;margin-top:5px">Owner heading out</div>
+    </div>
+  </div>`;
+  const recent=[...db.sopRecords].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,15);
+  if(recent.length>0){
+    h+=`<div class="sec-label">SOP History</div><div class="card">`;
+    recent.forEach(r=>{const fl=r.flags?r.flags.length:0,ph=r.photos?r.photos.length:0;h+=`<div class="card-row" onclick="viewSOPRecord('${r.id}')"><div style="font-size:22px;margin-right:10px">${r.type==='arrival'?'🏖️':'✈️'}</div><div class="crt"><h3>${r.type==='arrival'?'Arrival Prep':'Departure'} · ${esc(propName(r.propertyId))}</h3><p>${fmtDate(r.date)} · ${fl>0?`⚠️ ${fl} issue${fl!==1?'s':''}`:' ✅ All clear'}${ph>0?` · 📷 ${ph}`:''}</p></div><div class="crr">${icoChevron()}</div></div>`;});
+    h+=`</div>`;
+  }else{h+=`<div style="padding:16px;text-align:center;color:var(--text3);font-size:14px">No SOP records yet.</div>`;}
+  return h;
+}
+
+function sopSelectProp(type){
+  let h=`<div class="sh-head"><div class="sh-title">${type==='arrival'?'🏖️ Arrival Prep':'✈️ Departure'}</div><button class="sh-close" onclick="closeSheet()">✕</button></div><div style="padding:0 16px 12px;color:var(--text3);font-size:14px">Select the property:</div>`;
+  db.properties.forEach(p=>{h+=`<div class="card" style="cursor:pointer" onclick="closeSheet();startSOP('${p.id}','${type}')"><div class="card-section"><div style="font-size:17px;font-weight:500">${esc(p.name)}</div>${p.address?`<div style="font-size:13px;color:var(--text3);margin-top:2px">${esc(p.address)}</div>`:''}</div></div>`;});
+  openSheet(h);
+}
+
+function startSOP(pid,type){
+  const p=db.properties.find(x=>x.id===pid);if(!p)return;
+  const tmpl=type==='arrival'?SOP_ARRIVAL:SOP_DEPARTURE;
+  sopData={id:uid(),propertyId:pid,type,date:today(),items:{},flags:[],photos:[]};
+  tmpl.forEach(sec=>sec.items.forEach(item=>{sopData.items[item.id]={status:'ok',notes:''};} ));
+  renderSOPStep(p,type,0);
+}
+
+function renderSOPStep(p,type,step){
+  const tmpl=type==='arrival'?SOP_ARRIVAL:SOP_DEPARTURE;
+  const totalSteps=tmpl.length+2; // sections + photos + review
+  const pct=Math.round((step/totalSteps)*100);
+  const stepLabels=[...tmpl.map(s=>s.label.replace(/^[^\s]+\s/,'').split(' ')[0]),'Photos','Review'];
+  let content='';
+  if(step<tmpl.length){
+    const sec=tmpl[step];
+    content=`<div style="padding:0 16px 10px"><div style="font-size:18px;font-weight:600">${sec.label}</div><div style="font-size:13px;color:var(--text3);margin-top:3px">Tap ✅ OK · ⚠️ Issue · 🚩 Flag</div></div><div style="padding:0 16px">`;
+    sec.items.forEach(item=>{const cur=sopData.items[item.id]||{status:'ok',notes:''};content+=`<div class="ck-item"><div class="ck-info"><div class="ck-label">${esc(item.label)}</div><input placeholder="Notes (optional)" value="${esc(cur.notes||'')}" oninput="sopData.items['${item.id}'].notes=this.value"/></div><div class="ck-btns"><button class="ck-btn${cur.status==='ok'?' sel-ok':''}" onclick="setSOPStatus('${item.id}','ok',this)">✅</button><button class="ck-btn${cur.status==='issue'?' sel-issue':''}" onclick="setSOPStatus('${item.id}','issue',this)">⚠️</button><button class="ck-btn${cur.status==='flag'?' sel-flag':''}" onclick="setSOPStatus('${item.id}','flag',this)">🚩</button></div></div>`;});
+    content+=`</div>`;
+  }
+  if(step===tmpl.length){
+    content=`<div style="padding:0 16px 10px"><div style="font-size:18px;font-weight:600">📷 Photos</div><div style="font-size:13px;color:var(--text3);margin-top:3px">Document the property condition.</div></div>
+    <div class="photo-grid" id="sop-active-photos">
+      <div class="photo-add" onclick="pickActivePhoto('sop')"><span>📷</span><span>Add Photo</span></div>
+    </div>`;
+    if(sopData.photos&&sopData.photos.length>0){content+=`<script>setTimeout(()=>loadPhotosIntoGrid('sop-active-photos',${JSON.stringify(sopData.photos)},true),100);<\/script>`;}
+  }
+  if(step===totalSteps-1){
+    const iss=Object.entries(sopData.items).filter(([k,v])=>v.status!=='ok');
+    content=`<div style="padding:0 16px 10px"><div style="font-size:18px;font-weight:600">Review & Submit</div></div>
+    <div class="card">
+      <div class="card-row"><div class="crt"><h3>Property</h3></div><div class="crr" style="font-weight:500">${esc(p.name)}</div></div>
+      <div class="card-row"><div class="crt"><h3>Type</h3></div><div class="crr">${type==='arrival'?'🏖️ Arrival Prep':'✈️ Departure'}</div></div>
+      <div class="card-row"><div class="crt"><h3>Date</h3></div><div class="crr"><input type="date" id="sop-date" value="${sopData.date}" onchange="sopData.date=this.value" style="border:none;font-size:14px;color:var(--text);background:none;text-align:right;-webkit-appearance:none;"/></div></div>
+      <div class="card-row"><div class="crt"><h3>Items Needing Attention</h3></div><div class="crr">${iss.length>0?`<span class="badge b-orange">${iss.length}</span>`:'<span class="badge b-green">None</span>'}</div></div>
+      <div class="card-row"><div class="crt"><h3>Photos</h3></div><div class="crr">${sopData.photos&&sopData.photos.length>0?`<span class="badge b-teal">📷 ${sopData.photos.length}</span>`:'<span class="badge b-gray">None</span>'}</div></div>
+    </div>
+    <div class="sec-label" style="padding-top:8px">Flags / Issues (optional)</div>
+    <div id="sop-fl-list">${sopData.flags.map((f,i)=>sopFlEntry(f,i)).join('')}</div>
+    <div style="padding:4px 16px 8px"><button class="btn btn-secondary btn-block" onclick="addSOPFL()">+ Add Issue or Flag</button></div>`;
+  }
+  const h=`<div class="sh-head"><div class="sh-title">${type==='arrival'?'🏖️':'✈️'} ${esc(p.name)}</div><button class="sh-close" onclick="if(confirm('Cancel this SOP?'))closeSheet()">✕</button></div>
+  <div class="prog-wrap">
+    <div class="prog-steps">${stepLabels.map((s,i)=>`<span class="${i===step?'cur':''}">${s}</span>`).join('')}</div>
+    <div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div>
+    <div class="prog-label"><span>${step<tmpl.length?tmpl[step].label:step===tmpl.length?'Photos':'Review & Submit'}</span><span>${step+1}/${totalSteps}</span></div>
+  </div>
+  <div style="height:10px"></div>
+  <div id="sop-step">${content}</div>
+  <div style="padding:16px 16px 8px;display:flex;gap:10px">
+    ${step>0?`<button class="btn btn-secondary" style="flex:1" onclick="renderSOPStep(db.properties.find(x=>x.id==='${p.id}'),'${type}',${step-1})">← Back</button>`:''}
+    ${step<totalSteps-1?`<button class="btn btn-primary" style="flex:2" onclick="renderSOPStep(db.properties.find(x=>x.id==='${p.id}'),'${type}',${step+1})">Continue →</button>`:`<button class="btn btn-green" style="flex:2" onclick="submitSOP()">✅ Submit SOP</button>`}
+  </div>`;
+  openSheet(h);
+}
+
+function setSOPStatus(itemId,status,btn){sopData.items[itemId].status=status;const row=btn.closest('.ck-btns');row.querySelectorAll('.ck-btn').forEach(b=>{b.className='ck-btn';});btn.classList.add(status==='ok'?'sel-ok':status==='issue'?'sel-issue':'sel-flag');}
+function sopFlEntry(f,i){return`<div class="fl-card"><input class="fi" placeholder="Describe the issue *" value="${esc(f.description||'')}" oninput="sopData.flags[${i}].description=this.value"/><div class="pri-row"><button class="pri-btn${f.priority==='low'?' sel-low':''}" onclick="sopSetPri(${i},'low',this)">🟡 Low</button><button class="pri-btn${!f.priority||f.priority==='medium'?' sel-med':''}" onclick="sopSetPri(${i},'medium',this)">🟠 Med</button><button class="pri-btn${f.priority==='high'?' sel-high':''}" onclick="sopSetPri(${i},'high',this)">🔴 High</button></div></div>`;}
+function sopSetPri(i,pri,btn){sopData.flags[i].priority=pri;const row=btn.closest('.pri-row');row.querySelectorAll('.pri-btn').forEach(b=>{b.className='pri-btn';});btn.classList.add(pri==='low'?'sel-low':pri==='medium'?'sel-med':'sel-high');}
+function addSOPFL(){sopData.flags.push({description:'',priority:'medium'});document.getElementById('sop-fl-list').innerHTML=sopData.flags.map((f,i)=>sopFlEntry(f,i)).join('');}
+
+function submitSOP(){
+  if(!sopData)return;
+  if(!db.sopRecords)db.sopRecords=[];
+  db.sopRecords.push(sopData);save();
+  const fl=sopData.flags.length,type=sopData.type;
+  closeSheet();sopData=null;nav(curTab);
+  setTimeout(()=>toast(fl>0?`⚠️ SOP saved · ${fl} issue${fl!==1?'s':''} flagged`:`✅ ${type==='arrival'?'Arrival prep':'Departure'} SOP saved!`),300);
+}
+
+function viewSOPRecord(id){
+  if(!db.sopRecords)return;
+  const r=db.sopRecords.find(x=>x.id===id);if(!r)return;
+  const tmpl=r.type==='arrival'?SOP_ARRIVAL:SOP_DEPARTURE;
+  const allItems=tmpl.flatMap(s=>s.items);
+  const iss=Object.entries(r.items||{}).filter(([k,v])=>v.status!=='ok');
+  let h=`<div class="sh-head"><div class="sh-title">${r.type==='arrival'?'🏖️ Arrival Prep':'✈️ Departure'}</div><button class="sh-close" onclick="closeSheet()">✕</button></div>
+  <div style="padding:0 16px 8px;color:var(--text3);font-size:14px">${esc(propName(r.propertyId))} · 📅 ${fmtDate(r.date)}</div>
+  <div class="sec-label">Summary</div><div class="card">
+    <div class="card-row"><div class="crt"><h3>Items Checked</h3></div><div class="crr">${allItems.length}</div></div>
+    <div class="card-row"><div class="crt"><h3>Items Needing Attention</h3></div><div class="crr">${iss.length>0?`<span class="badge b-orange">${iss.length}</span>`:'<span class="badge b-green">None</span>'}</div></div>
+    <div class="card-row"><div class="crt"><h3>Flags</h3></div><div class="crr">${r.flags&&r.flags.length>0?`<span class="badge b-red">${r.flags.length}</span>`:'<span class="badge b-green">None</span>'}</div></div>
+  </div>`;
+  if(iss.length>0){
+    h+=`<div class="sec-label">Items Needing Attention</div><div class="card">`;
+    iss.forEach(([iid,item])=>{const t=allItems.find(x=>x.id===iid);h+=`<div class="card-row"><div class="crt"><h3>${item.status==='flag'?'🚩':'⚠️'} ${esc(t?t.label:iid)}</h3>${item.notes?`<p>${esc(item.notes)}</p>`:''}</div></div>`;});
+    h+=`</div>`;
+  }
+  if(r.flags&&r.flags.length>0){
+    h+=`<div class="sec-label">Flagged Issues</div><div class="card">`;
+    r.flags.forEach(f=>{const c=f.priority==='high'?'var(--red)':f.priority==='low'?'var(--yellow)':'var(--orange)';h+=`<div class="card-row"><div style="width:4px;min-height:36px;background:${c};border-radius:2px;margin-right:12px;flex-shrink:0;align-self:stretch"></div><div class="crt"><h3>${esc(f.description)}</h3><p>${f.priority||'medium'} priority</p></div></div>`;});
+    h+=`</div>`;
+  }
+  h+=`<div class="sec-label">Photos</div>
+  <div class="photo-grid" id="sop-rec-photos-${id}">
+    <div class="photo-add" onclick="pickRecordPhoto('sop','${id}')"><span>📷</span><span>Add Photo</span></div>
+  </div>`;
+  h+=`<div style="padding:8px 16px 20px"><button class="btn btn-red btn-block" onclick="deleteSOPRecord('${r.id}')">Delete This Record</button></div>`;
+  openSheet(h);
+  setTimeout(()=>loadPhotosIntoGrid('sop-rec-photos-'+id,r.photos||[],false),100);
+}
+
+function deleteSOPRecord(id){if(!confirm('Delete this SOP record?'))return;db.sopRecords=(db.sopRecords||[]).filter(x=>x.id!==id);save();closeSheet();nav(curTab);}
+
+
+/* ═══════════════════════════════════════════════
+   PHOTO UTILITIES
+═══════════════════════════════════════════════ */
+function pickActivePhoto(context){
+  const inp=document.createElement('input');
+  inp.type='file';inp.accept='image/*';inp.capture='environment';
+  inp.onchange=async e=>{
+    const file=e.target.files[0];if(!file)return;
+    toast('Processing photo...');
+    const dataUrl=await compressImage(file,1200,0.8);
+    const photoId=uid();
+    await storePhoto(photoId,dataUrl);
+    if(context==='check'){if(ckData){if(!ckData.photos)ckData.photos=[];ckData.photos.push(photoId);}}
+    else if(context==='sop'){if(sopData){if(!sopData.photos)sopData.photos=[];sopData.photos.push(photoId);}}
+    // Add thumbnail to current grid
+    const gridId=context==='check'?'active-photos':'sop-active-photos';
+    const grid=document.getElementById(gridId);
+    if(grid){
+      const img=document.createElement('img');img.src=dataUrl;img.className='photo-thumb';img.onclick=()=>viewPhotoFull(dataUrl);
+      grid.insertBefore(img,grid.firstChild);
+    }
+    toast('📷 Photo added!');
+  };
+  inp.click();
+}
+
+function pickRecordPhoto(context,contextId){
+  const inp=document.createElement('input');
+  inp.type='file';inp.accept='image/*';inp.capture='environment';
+  inp.onchange=async e=>{
+    const file=e.target.files[0];if(!file)return;
+    toast('Processing photo...');
+    const dataUrl=await compressImage(file,1200,0.8);
+    const photoId=uid();
+    await storePhoto(photoId,dataUrl);
+    // Save to record
+    if(context==='check'){const c=db.checks.find(x=>x.id===contextId);if(c){if(!c.photos)c.photos=[];c.photos.push(photoId);save();}}
+    else if(context==='maint'){const m=db.maintenance.find(x=>x.id===contextId);if(m){if(!m.photos)m.photos=[];m.photos.push(photoId);save();}}
+    else if(context==='sop'){const r=(db.sopRecords||[]).find(x=>x.id===contextId);if(r){if(!r.photos)r.photos=[];r.photos.push(photoId);save();}}
+    else if(context==='project'){const p=(db.projects||[]).find(x=>x.id===contextId);if(p){if(!p.photos)p.photos=[];p.photos.push(photoId);save();}}
+    // Add thumbnail
+    const gridId=(context==='check'?'rec-photos-':context==='maint'?'maint-photos-':context==='sop'?'sop-rec-photos-':'proj-photos-')+contextId;
+    const grid=document.getElementById(gridId);
+    if(grid){const img=document.createElement('img');img.src=dataUrl;img.className='photo-thumb';img.onclick=()=>viewPhotoFull(dataUrl);grid.insertBefore(img,grid.firstChild);}
+    toast('📷 Photo saved!');
+  };
+  inp.click();
+}
+
+async function loadPhotosIntoGrid(gridId,photoIds,isActive){
+  const grid=document.getElementById(gridId);
+  if(!grid||!photoIds||!photoIds.length)return;
+  for(const pid of[...photoIds].reverse()){
+    const dataUrl=await loadPhoto(pid);
+    if(dataUrl){
+      const img=document.createElement('img');img.src=dataUrl;img.className='photo-thumb';
+      img.onclick=()=>viewPhotoFull(dataUrl);
+      const addBtn=grid.querySelector('.photo-add');
+      if(addBtn)grid.insertBefore(img,addBtn.nextSibling);else grid.insertBefore(img,grid.firstChild);
+    }
+  }
+}
+
+function viewPhotoFull(dataUrl){
+  const ov=document.createElement('div');
+  ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:500;display:flex;align-items:center;justify-content:center;cursor:zoom-out;';
+  ov.onclick=()=>ov.remove();
+  const img=document.createElement('img');img.src=dataUrl;img.style.cssText='max-width:100%;max-height:100%;object-fit:contain;border-radius:4px;';
+  ov.appendChild(img);document.body.appendChild(ov);
+}
+
+/* ═══════════════════════════════════════════════
+   REPORTS
+═══════════════════════════════════════════════ */
+function generateReport(propertyId){
+  const props=propertyId?db.properties.filter(p=>p.id===propertyId):db.properties;
+  if(props.length===0){alert('No properties to report on.');return;}
+  const logoSrc=localStorage.getItem('kmrs_logo');
+  const logoHtml=logoSrc?`<img src="${logoSrc}" style="height:50px;object-fit:contain">`:`<div style="font-size:22px;font-weight:800;color:#007AFF">KMRS</div>`;
+  const reportDate=new Date().toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  let body='';
+  props.forEach(p=>{
+    const chks=db.checks.filter(c=>c.propertyId===p.id).sort((a,b)=>b.date.localeCompare(a.date));
+    const mItems=db.maintenance.filter(m=>m.propertyId===p.id);
+    const invs=(db.invoices||[]).filter(i=>i.property===p.name&&calcInvoiceStatus(i)!=='paid');
+    const projs=(db.projects||[]).filter(pj=>pj.propertyId===p.id&&pj.status!=='completed');
+    const lc=chks[0];
+    const cs=checkStatus(p.id);
+    body+=`
+    <div style="page-break-inside:avoid;margin-bottom:40px;border:1px solid #e0e0e0;border-radius:12px;overflow:hidden">
+      <div style="background:#007AFF;color:white;padding:16px 20px">
+        <h2 style="margin:0;font-size:20px">${p.name}</h2>
+        ${p.address?`<p style="margin:4px 0 0;font-size:13px;opacity:0.85">${p.address}</p>`:''}
+        ${p.owner?`<p style="margin:4px 0 0;font-size:13px;opacity:0.85">Owner: ${p.owner}${p.ownerPhone?' · '+p.ownerPhone:''}</p>`:''}
+      </div>
+      <div style="padding:16px 20px">
+        <div style="display:flex;gap:20px;flex-wrap:wrap;margin-bottom:16px">
+          <div style="text-align:center"><div style="font-size:22px;font-weight:700;color:${cs==='ok'?'#34C759':cs==='never'?'#8E8E93':'#FF3B30'}">${cs==='ok'?'✓':cs==='never'?'—':'!'}</div><div style="font-size:11px;color:#666">Last Check<br>${lc?fmtDate(lc.date):'Never'}</div></div>
+          <div style="text-align:center"><div style="font-size:22px;font-weight:700;color:${mItems.filter(m=>maintStatus(m)==='overdue').length>0?'#FF3B30':'#34C759'}">${mItems.filter(m=>maintStatus(m)==='overdue').length}</div><div style="font-size:11px;color:#666">Maint<br>Overdue</div></div>
+          <div style="text-align:center"><div style="font-size:22px;font-weight:700;color:${invs.length>0?'#FF9500':'#34C759'}">${invs.length}</div><div style="font-size:11px;color:#666">Open<br>Invoices</div></div>
+          <div style="text-align:center"><div style="font-size:22px;font-weight:700;color:#007AFF">${projs.length}</div><div style="font-size:11px;color:#666">Active<br>Projects</div></div>
+        </div>
+        ${mItems.filter(m=>['overdue','due_soon'].includes(maintStatus(m))).length>0?`
+        <h4 style="margin:0 0 8px;font-size:13px;text-transform:uppercase;color:#666;letter-spacing:0.5px">⚠️ Maintenance Attention Needed</h4>
+        <table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:14px">
+          ${mItems.filter(m=>['overdue','due_soon'].includes(maintStatus(m))).map(m=>{const cat=CATS[m.category]||CATS.general;return`<tr style="border-bottom:1px solid #f0f0f0"><td style="padding:6px 8px">${cat.emoji} ${m.name}</td><td style="padding:6px 8px;color:#666">${propName(m.propertyId)}</td><td style="padding:6px 8px;color:${maintStatus(m)==='overdue'?'#FF3B30':'#FF9500'};text-align:right">${m.nextDue?fmtDate(m.nextDue):'—'}</td></tr>`;}).join('')}
+        </table>`:''}
+        ${invs.length>0?`
+        <h4 style="margin:0 0 8px;font-size:13px;text-transform:uppercase;color:#666;letter-spacing:0.5px">💸 Outstanding Invoices</h4>
+        <table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:14px">
+          ${invs.map(i=>`<tr style="border-bottom:1px solid #f0f0f0"><td style="padding:6px 8px">${i.vendor}${i.invoiceNum?' #'+i.invoiceNum:''}</td><td style="padding:6px 8px;color:${calcInvoiceStatus(i)==='overdue'?'#FF3B30':'#FF9500'};text-align:right">$${Number(i.amount||0).toLocaleString()}</td><td style="padding:6px 8px;color:#666;text-align:right">${fmtDate(i.dueDate)}</td></tr>`).join('')}
+          <tr><td colspan="2" style="padding:8px;font-weight:700;text-align:right">Total:</td><td style="padding:8px;font-weight:700;text-align:right">$${invs.reduce((s,i)=>s+Number(i.amount||0),0).toLocaleString()}</td></tr>
+        </table>`:''}
+        ${chks.length>0?`
+        <h4 style="margin:0 0 8px;font-size:13px;text-transform:uppercase;color:#666;letter-spacing:0.5px">✅ Recent Checks</h4>
+        <table style="width:100%;border-collapse:collapse;font-size:13px">
+          ${chks.slice(0,3).map(c=>{const fl=c.flags?c.flags.length:0;return`<tr style="border-bottom:1px solid #f0f0f0"><td style="padding:6px 8px">${fmtDate(c.date)}</td><td style="padding:6px 8px;color:${fl>0?'#FF9500':'#34C759'}">${fl>0?`⚠️ ${fl} issue${fl!==1?'s':''}`:'✅ All clear'}</td></tr>`;}).join('')}
+        </table>`:''}
+      </div>
+    </div>`;
+  });
+  // Overall invoice summary
+  const allInvs=(db.invoices||[]).filter(i=>calcInvoiceStatus(i)!=='paid');
+  const totalDue=allInvs.reduce((s,i)=>s+Number(i.amount||0),0);
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>KMRS Report · ${reportDate}</title>
+  <style>*{box-sizing:border-box;}body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;color:#1c1c1e;margin:0;padding:0;background:white;}
+  @media print{body{print-color-adjust:exact;-webkit-print-color-adjust:exact;}}</style></head>
+  <body><div style="max-width:800px;margin:0 auto;padding:32px 24px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;padding-bottom:16px;border-bottom:2px solid #007AFF">
+      ${logoHtml}
+      <div style="text-align:right"><div style="font-size:13px;color:#666">${reportDate}</div><div style="font-size:11px;color:#999;margin-top:2px">KMRS Residential Services</div></div>
+    </div>
+    <h1 style="font-size:24px;margin:16px 0 4px;font-weight:700">${propertyId&&props.length===1?props[0].name+' — Property Report':'Full Portfolio Report'}</h1>
+    <p style="color:#666;font-size:14px;margin:0 0 24px">${props.length} propert${props.length===1?'y':'ies'} · ${allInvs.length} open invoice${allInvs.length!==1?'s':''} · $${totalDue.toLocaleString(undefined,{minimumFractionDigits:2})} total due</p>
+    ${body}
+    <div style="margin-top:32px;padding-top:16px;border-top:1px solid #e0e0e0;font-size:11px;color:#999;text-align:center">Generated by KMRS Residential Services · ${reportDate}</div>
+  </div>
+  <script>window.onload=function(){window.print();}<\/script>
+  </body></html>`;
+  const win=window.open('','_blank');
+  if(win){win.document.write(html);win.document.close();}
+  else{alert('Please allow pop-ups to generate the report.');}
+}
+
+/* ═══════════════════════════════════════════════
+   SHEET + TOAST
+═══════════════════════════════════════════════ */
+function openSheet(html){document.getElementById('sheetContent').innerHTML=html;document.getElementById('sheetOv').classList.add('open');document.getElementById('page').classList.add('locked');}
+function closeSheet(){document.getElementById('sheetOv').classList.remove('open');document.getElementById('page').classList.remove('locked');}
+
+function toast(msg){
+  const t=document.createElement('div');
+  t.style.cssText='position:fixed;bottom:calc(60px + env(safe-area-inset-bottom,0px) + 20px);left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.82);color:white;padding:11px 20px;border-radius:20px;font-size:14px;font-weight:500;z-index:300;white-space:nowrap;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);animation:slideUp 0.3s ease;';
+  t.textContent=msg;document.body.appendChild(t);
+  setTimeout(()=>t.remove(),3200);
+}
+
+/* ═══════════════════════════════════════════════
+   EXPORT / IMPORT
+═══════════════════════════════════════════════ */
+function exportData(){
+  const payload=JSON.stringify(db,null,2);
+  const blob=new Blob([payload],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=`KMRS_backup_${today()}.json`;a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+  toast('📤 Backup downloaded!');
+}
+
+function importDataPrompt(){
+  const inp=document.createElement('input');inp.type='file';inp.accept='.json';
+  inp.onchange=function(e){
+    const file=e.target.files[0];if(!file)return;
+    const reader=new FileReader();
+    reader.onload=function(ev){
+      try{
+        const imported=JSON.parse(ev.target.result);
+        if(!Array.isArray(imported.properties))throw new Error('bad format');
+        if(confirm(`Import "${file.name}"?\n\nThis will REPLACE all current data. Export first if needed.`)){
+          db=Object.assign({properties:[],vendors:[],checks:[],maintenance:[],sopRecords:[],invoices:[],projects:[]},imported);
+          save();nav(curTab);
+          toast('📥 Data imported successfully!');
+        }
+      }catch(err){alert('Could not read this file. Please use a KMRS backup .json file.');}
+    };
+    reader.readAsText(file);
+  };
+  inp.click();
+}
+
+/* ═══════════════════════════════════════════════
+   UTILS
+═══════════════════════════════════════════════ */
+function esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+/* ═══════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════ */
+document.addEventListener("DOMContentLoaded",()=>{ setupPWA(); nav("home"); });
+
+/* ═══════════════════════════════════════════════
+   PWA — iPhone / Android Install Support
+═══════════════════════════════════════════════ */
+function setupPWA(){
+  // Generate 180x180 app icon via canvas
+  const c=document.createElement('canvas');c.width=180;c.height=180;
+  const ctx=c.getContext('2d');
+  const gr=ctx.createLinearGradient(0,0,180,180);
+  gr.addColorStop(0,'#007AFF');gr.addColorStop(1,'#5856D6');
+  ctx.fillStyle=gr;
+  if(ctx.roundRect){ctx.beginPath();ctx.roundRect(0,0,180,180,36);ctx.fill();}
+  else{ctx.fillRect(0,0,180,180);}
+  ctx.fillStyle='white';
+  ctx.font='bold 70px -apple-system,sans-serif';
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText('KM',90,80);
+  ctx.font='bold 20px -apple-system,sans-serif';
+  ctx.globalAlpha=0.85;ctx.fillText('RS',90,118);ctx.globalAlpha=1;
+  const iconUrl=c.toDataURL('image/png');
+  // Set apple-touch-icon
+  const ati=document.getElementById('apple-touch-icon');
+  if(ati)ati.href=iconUrl;
+  // Set manifest (works for Android/Chrome; iOS relies on meta tags)
+  try{
+    const mf={name:'KMRS Residential Services',short_name:'KMRS',start_url:location.href,display:'standalone',background_color:'#F2F2F7',theme_color:'#007AFF',icons:[{src:iconUrl,sizes:'180x180',type:'image/png'},{src:iconUrl,sizes:'512x512',type:'image/png'}]};
+    const mblob=new Blob([JSON.stringify(mf)],{type:'application/manifest+json'});
+    const mlink=document.getElementById('pwa-manifest');
+    if(mlink)mlink.href=URL.createObjectURL(mblob);
+  }catch(e){}
+  // Register service worker for offline use (only over HTTPS)
+  if('serviceWorker' in navigator && location.protocol==='https:'){
+    const swCode=`
+      const CACHE='kmrs-v1';
+      self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.add(location.pathname||'/')));});
+      self.addEventListener('fetch',e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).then(res=>{const clone=res.clone();caches.open(CACHE).then(c=>c.put(e.request,clone));return res;})));});
+    `;
+    const swBlob=new Blob([swCode],{type:'application/javascript'});
+    const swUrl=URL.createObjectURL(swBlob);
+    navigator.serviceWorker.register(swUrl).then(()=>{console.log('SW registered');}).catch(()=>{});
+  }
+}
+
+function showInstallGuide(){
+  const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent);
+  const isAndroid=/Android/.test(navigator.userAgent);
+  const isLocal=location.protocol==='file:';
+  let h=`<div class="sh-head"><div class="sh-title">📲 Install on Phone</div><button class="sh-close" onclick="closeSheet()">✕</button></div>`;
+  if(isLocal){
+    h+=`<div style="margin:0 16px 16px;background:linear-gradient(135deg,#FF9500,#FF6B00);border-radius:14px;padding:18px">
+      <div style="color:white;font-size:16px;font-weight:700;margin-bottom:8px">⚠️ Step 1: Host the App Online</div>
+      <div style="color:rgba(255,255,255,0.92);font-size:14px;line-height:1.6">You're opening KMRS from a local file. To install on iPhone, it needs a web address (URL).<br><br>
+      <strong>Easiest option — Netlify (free, 2 min):</strong></div>
+    </div>
+    <div class="card">
+      <div class="card-row"><div style="width:26px;height:26px;background:var(--blue);border-radius:50%;color:white;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-right:12px;flex-shrink:0">1</div><div class="crt"><h3>Go to netlify.com/drop</h3><p>Open this in your browser on your Mac</p></div></div>
+      <div class="card-row"><div style="width:26px;height:26px;background:var(--blue);border-radius:50%;color:white;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-right:12px;flex-shrink:0">2</div><div class="crt"><h3>Drag KMRS.html onto the page</h3><p>Drop the file into the dashed zone</p></div></div>
+      <div class="card-row"><div style="width:26px;height:26px;background:var(--blue);border-radius:50%;color:white;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-right:12px;flex-shrink:0">3</div><div class="crt"><h3>Copy your new URL</h3><p>It'll look like: yourname.netlify.app</p></div></div>
+      <div class="card-row"><div style="width:26px;height:26px;background:var(--green);border-radius:50%;color:white;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-right:12px;flex-shrink:0">4</div><div class="crt"><h3>Open that URL on your iPhone</h3><p>Then follow the steps below ↓</p></div></div>
+    </div>`;
+  }
+  h+=`<div class="sec-label">${isLocal?'Step 2: ':''}Add to iPhone Home Screen</div>
+  <div class="card">
+    <div class="card-row"><div style="width:26px;height:26px;background:var(--blue);border-radius:50%;color:white;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-right:12px;flex-shrink:0">1</div><div class="crt"><h3>Open the app URL in Safari</h3><p>Must use Safari — Chrome won't work for this</p></div></div>
+    <div class="card-row"><div style="width:26px;height:26px;background:var(--blue);border-radius:50%;color:white;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-right:12px;flex-shrink:0">2</div><div class="crt"><h3>Tap the Share button</h3><p>The box with an arrow pointing up at the bottom of Safari</p></div></div>
+    <div class="card-row"><div style="width:26px;height:26px;background:var(--blue);border-radius:50%;color:white;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-right:12px;flex-shrink:0">3</div><div class="crt"><h3>Tap "Add to Home Screen"</h3><p>Scroll down in the Share menu to find it</p></div></div>
+    <div class="card-row"><div style="width:26px;height:26px;background:var(--green);border-radius:50%;color:white;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-right:12px;flex-shrink:0">4</div><div class="crt"><h3>Tap "Add" — you're done!</h3><p>KMRS icon will appear on your home screen</p></div></div>
+  </div>
+  <div style="margin:0 16px 8px;padding:14px;background:var(--card);border-radius:12px;font-size:13px;color:var(--text3);line-height:1.6">
+    💡 <strong>Your data stays safe.</strong> All property data is stored locally on each device. Use Export Backup to move data between devices.
+  </div>
+  <div style="height:16px"></div>`;
+  openSheet(h);
+}
+
+let _resizeTimer;
+window.addEventListener('resize',()=>{clearTimeout(_resizeTimer);_resizeTimer=setTimeout(()=>nav(curTab),150);});
+</script>
+</body></html>
