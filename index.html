@@ -320,8 +320,128 @@ let db=(()=>{
 
 function save(){
   try{localStorage.setItem(SK,JSON.stringify(db));localStorage.removeItem(SK_OLD);}catch(e){}
+  scheduleSyncPush();
 }
 function uid(){return Date.now().toString(36)+Math.random().toString(36).substr(2,8);}
+
+/* ═══════════════════════════════════════════════
+   CLOUD SYNC — GitHub Gist
+═══════════════════════════════════════════════ */
+const SYNC_SK='kmrs_sync_v1';
+let syncCfg=(()=>{try{return JSON.parse(localStorage.getItem(SYNC_SK)||'{}')}catch(e){return{};}})();
+function saveSyncCfg(){localStorage.setItem(SYNC_SK,JSON.stringify(syncCfg));}
+let _syncTimer=null;
+
+function scheduleSyncPush(){
+  if(!syncCfg.token||!syncCfg.gistId)return;
+  clearTimeout(_syncTimer);
+  _syncTimer=setTimeout(()=>doSync(),8000);
+}
+
+function timeAgo(ts){
+  const m=Math.floor((Date.now()-ts)/60000);
+  if(m<1)return'just now';if(m<60)return m+'m ago';
+  const h=Math.floor(m/60);if(h<24)return h+'h ago';
+  return Math.floor(h/24)+'d ago';
+}
+
+async function doSync(){
+  if(!syncCfg.token)return;
+  setSyncIndicator('syncing');
+  try{
+    const h={'Authorization':'token '+syncCfg.token,'Content-Type':'application/json'};
+    if(!syncCfg.gistId){
+      const r=await fetch('https://api.github.com/gists',{method:'POST',headers:h,body:JSON.stringify({
+        description:'KMRS App Sync Data',public:false,
+        files:{'kmrs-data.json':{content:JSON.stringify({db,ts:Date.now()})}}
+      })});
+      if(!r.ok){const e=await r.json();throw new Error(e.message||'Could not create sync');}
+      const g=await r.json();
+      syncCfg.gistId=g.id;syncCfg.lastSync=Date.now();saveSyncCfg();
+      setSyncIndicator('ok');toast('☁️ Sync enabled! Share your Sync Code with your other device.');
+      if(curTab==='home')nav('home');return;
+    }
+    const gr=await fetch('https://api.github.com/gists/'+syncCfg.gistId,{headers:h});
+    if(!gr.ok)throw new Error('Could not reach sync data — check token');
+    const gist=await gr.json();
+    const raw=gist.files['kmrs-data.json']?.content;
+    if(raw){
+      const {db:cdb}=JSON.parse(raw);
+      const keys=['properties','vendors','checks','maintenance','sopRecords','invoices','projects'];
+      for(const k of keys){
+        const map={};
+        for(const rec of(cdb[k]||[]))map[rec.id]=rec;
+        for(const rec of(db[k]||[]))map[rec.id]=rec;
+        db[k]=Object.values(map);
+      }
+      localStorage.setItem(SK,JSON.stringify(db));
+    }
+    const pr=await fetch('https://api.github.com/gists/'+syncCfg.gistId,{method:'PATCH',headers:h,body:JSON.stringify({
+      files:{'kmrs-data.json':{content:JSON.stringify({db,ts:Date.now()})}}
+    })});
+    if(!pr.ok)throw new Error('Could not push data to cloud');
+    syncCfg.lastSync=Date.now();saveSyncCfg();
+    setSyncIndicator('ok');
+    if(curTab==='home')nav('home');
+    else toast('☁️ Synced!');
+  }catch(e){setSyncIndicator('error');toast('❌ Sync: '+e.message);}
+}
+
+function setSyncIndicator(state){
+  const el=document.getElementById('sync-pill');if(!el)return;
+  const t=syncCfg.lastSync?timeAgo(syncCfg.lastSync):'never';
+  if(state==='syncing')el.innerHTML='🔄 Syncing…';
+  else if(state==='ok')el.innerHTML='✅ Synced '+t;
+  else if(state==='error')el.innerHTML='❌ Sync error — tap to retry';
+  else el.innerHTML=syncCfg.gistId?'☁️ Last synced '+t:'⚠️ Tap to set up';
+}
+
+function showSyncSetup(){
+  const sc=syncCfg.gistId||'';
+  openSheet(`<div style="padding:24px 20px 32px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <h2 style="font-size:20px;font-weight:700">☁️ Cloud Sync</h2>
+      <button onclick="closeSheet()" style="font-size:26px;color:var(--text3);padding:0 4px;line-height:1">×</button>
+    </div>
+    <p style="font-size:14px;color:var(--text3);margin-bottom:18px;line-height:1.55">
+      Sync your KMRS data between your desktop and iPhone. Data is stored privately on GitHub — free forever with your existing account.
+    </p>
+    ${sc?`<div style="background:var(--bg);border-radius:12px;padding:14px 16px;margin-bottom:16px;border:1.5px solid var(--sep)">
+      <div style="font-size:11px;font-weight:700;color:var(--text3);letter-spacing:.06em;margin-bottom:6px">YOUR SYNC CODE</div>
+      <div style="font-size:12px;font-family:monospace;word-break:break-all;color:var(--text);line-height:1.6">${sc}</div>
+      <div style="font-size:12px;color:var(--text3);margin-top:8px">📋 Copy this code and paste it into your iPhone when setting up sync there.</div>
+    </div>`:''}
+    <div style="margin-bottom:14px">
+      <label style="font-size:13px;font-weight:600;color:var(--text2);margin-bottom:6px;display:block">GitHub Personal Access Token</label>
+      <input id="ssi-token" type="password" value="${syncCfg.token||''}" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
+        style="width:100%;padding:12px;border:1.5px solid var(--sep);border-radius:10px;font-size:14px;background:var(--bg)">
+      <div style="font-size:11px;color:var(--text3);margin-top:5px;line-height:1.55">
+        📖 How to get one: go to <b>github.com</b> → click your profile photo → <b>Settings</b> → scroll to <b>Developer settings</b> → <b>Personal access tokens</b> → <b>Tokens (classic)</b> → <b>Generate new token</b> → give it a name like "KMRS Sync" → check only the <b>gist</b> box → click <b>Generate</b>. Copy the token here.
+      </div>
+    </div>
+    <div style="margin-bottom:18px">
+      <label style="font-size:13px;font-weight:600;color:var(--text2);margin-bottom:6px;display:block">Sync Code <span style="font-weight:400;color:var(--text3)">(from your other device — leave blank on first setup)</span></label>
+      <input id="ssi-code" type="text" value="${sc}" placeholder="Paste code from your other device"
+        style="width:100%;padding:12px;border:1.5px solid var(--sep);border-radius:10px;font-size:13px;font-family:monospace;background:var(--bg)">
+    </div>
+    <button class="btn btn-primary btn-block" onclick="applySyncSetup()">${sc?'💾 Save & Sync Now':'🔗 Enable Cloud Sync'}</button>
+    ${syncCfg.token?`<button class="btn btn-secondary btn-block" style="margin-top:10px;color:var(--red)" onclick="clearSyncSetup()">Disconnect Sync</button>`:''}
+  </div>`);
+}
+
+async function applySyncSetup(){
+  const token=document.getElementById('ssi-token').value.trim();
+  const code=document.getElementById('ssi-code').value.trim();
+  if(!token){alert('Please enter your GitHub Personal Access Token.');return;}
+  syncCfg.token=token;syncCfg.gistId=code||'';saveSyncCfg();
+  closeSheet();await doSync();
+}
+
+function clearSyncSetup(){
+  if(confirm('Disconnect cloud sync?\n\nYour local data will NOT be affected.')){
+    syncCfg={};saveSyncCfg();closeSheet();nav('home');toast('Sync disconnected');
+  }
+}
 
 /* ═══════════════════════════════════════════════
    INDEXEDDB — PHOTO STORE
@@ -612,6 +732,22 @@ function renderHome(){
     <div class="stat-card"><div class="stat-num" style="color:var(--blue)">${db.properties.length}</div><div class="stat-lbl">Properties</div></div>
     <div class="stat-card"><div class="stat-num" style="color:${needCheck.length>0?'var(--red)':'var(--green)'}">${needCheck.length}</div><div class="stat-lbl">Checks Needed</div></div>
     <div class="stat-card"><div class="stat-num" style="color:${overdueInv.length>0?'var(--red)':dueSoonMaint>0?'var(--orange)':'var(--green)'}">${overdueInv.length+dueSoonMaint}</div><div class="stat-lbl">Action Items</div></div>
+  </div>`;
+  out+=`<div style="margin:0 16px 14px">
+    <div class="card" style="cursor:pointer" onclick="showSyncSetup()">
+      <div style="padding:12px 16px;display:flex;justify-content:space-between;align-items:center">
+        <div style="flex:1;min-width:0">
+          <div style="font-size:15px;font-weight:600">☁️ Cloud Sync</div>
+          <div id="sync-pill" style="font-size:12px;color:var(--text3);margin-top:2px">
+            ${syncCfg.gistId?'☁️ Last synced '+(syncCfg.lastSync?timeAgo(syncCfg.lastSync):'never'):'⚠️ Tap to set up — keep devices in sync'}
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          ${syncCfg.gistId?`<button class="btn btn-secondary" style="padding:7px 14px;font-size:13px;flex-shrink:0" onclick="event.stopPropagation();doSync()">Sync Now</button>`:''}
+          ${icoChevron()}
+        </div>
+      </div>
+    </div>
   </div>`;
   if(db.properties.length===0){
     out+=`<div class="empty"><div class="empty-ico">🏡</div><h3>Welcome to KMRS</h3><p>Add your managed properties to get started.</p><button class="btn btn-primary mt8" onclick="nav('props')">Add First Property</button></div>`;
@@ -1768,7 +1904,7 @@ function esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/<
 /* ═══════════════════════════════════════════════
    INIT
 ═══════════════════════════════════════════════ */
-document.addEventListener("DOMContentLoaded",()=>{ setupPWA(); nav("home"); });
+document.addEventListener("DOMContentLoaded",()=>{ setupPWA(); nav("home"); if(syncCfg.token&&syncCfg.gistId){setTimeout(()=>doSync(),2000);} });
 
 /* ═══════════════════════════════════════════════
    PWA — iPhone / Android Install Support
